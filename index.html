@@ -711,14 +711,17 @@ button:disabled {
 
                  <!-- Power-Up Display (moved into bottom UI for easy access) -->
                  <div id="power-up-display" class="power-up-ui" style="display:flex;gap:10px;align-items:center;">
-                     <button class="power-up-slot nav-button" data-type="multishot" id="power-multishot" title="Z / Multishot (pick up Z to grab)">
-                         Z <div class="power-up-timer" style="font-family:var(--font-primary);font-size:0.8em;margin-top:4px;">x0</div>
+                     <button class="power-up-slot nav-button" data-type="multishot" id="power-multishot" title="1 / Multishot (press 1 to pick up / activate)">
+                         1 <span style="margin-left:8px">🔫</span>
+                         <div class="power-up-timer" style="font-family:var(--font-primary);font-size:0.8em;margin-top:4px;">x0</div>
                      </button>
-                     <button class="power-up-slot nav-button" data-type="homing" id="power-homing" title="X / Homing">
-                         X <div class="power-up-timer" style="font-family:var(--font-primary);font-size:0.8em;margin-top:4px;">x0</div>
+                     <button class="power-up-slot nav-button" data-type="homing" id="power-homing" title="2 / Homing (press 2 to activate)">
+                         2 <span style="margin-left:8px">🎯</span>
+                         <div class="power-up-timer" style="font-family:var(--font-primary);font-size:0.8em;margin-top:4px;">x0</div>
                      </button>
-                     <button class="power-up-slot nav-button" data-type="shield" id="power-shield" title="C / Shield">
-                         C <div class="power-up-timer" style="font-family:var(--font-primary);font-size:0.8em;margin-top:4px;">x0</div>
+                     <button class="power-up-slot nav-button" data-type="shield" id="power-shield" title="3 / Shield (press 3 to activate)">
+                         3 <span style="margin-left:8px">🛡️</span>
+                         <div class="power-up-timer" style="font-family:var(--font-primary);font-size:0.8em;margin-top:4px;">x0</div>
                      </button>
                  </div>
 
@@ -775,6 +778,48 @@ button:disabled {
  bgMusic.loop = true;
  bgMusic.volume = 0.35;
  bgMusic.preload = 'auto';
+ 
+ // Background image for game levels (spacey parallax)
+ const levelBgImage = new Image();
+ levelBgImage.src = '/background.png';
+ levelBgImage.crossOrigin = 'anonymous';
+ levelBgImage.onload = () => { /* ready */ };
+ 
+ // Small configurable starfield for twinkle/parallax
+ const STAR_COUNT = 80;
+ const stars = [];
+ for (let i = 0; i < STAR_COUNT; i++) {
+     stars.push({
+         x: Math.random(),
+         y: Math.random(),
+         size: Math.random() * 1.6 + 0.4,
+         baseAlpha: 0.15 + Math.random() * 0.55,
+         twinkleSpeed: 0.002 + Math.random() * 0.006,
+         phase: Math.random() * Math.PI * 2
+     });
+ }
+ // Precompute medium and bright star layers so positions stay static each frame
+ const MEDIUM_STAR_COUNT = 28;
+ const mediumStars = [];
+ for (let i = 0; i < MEDIUM_STAR_COUNT; i++) {
+     // distribute deterministically across canvas using index-based fractions
+     mediumStars.push({
+         xFrac: (i + 0.3) / MEDIUM_STAR_COUNT,
+         yFrac: (0.2 + (i * 7 % MEDIUM_STAR_COUNT) / MEDIUM_STAR_COUNT * 0.6),
+         size: 1 + (i % 3) * 0.6,
+         baseAlphaOffset: 0.35 + 0.35 * Math.sin(i) // static per-star alpha offset
+     });
+ }
+ const BRIGHT_STAR_COUNT = 12;
+ const brightStars = [];
+ for (let i = 0; i < BRIGHT_STAR_COUNT; i++) {
+     brightStars.push({
+         xFrac: (0.05 + (i * 31 % BRIGHT_STAR_COUNT) / BRIGHT_STAR_COUNT * 0.9),
+         yFrac: (0.1 + (i * 17 % BRIGHT_STAR_COUNT) / BRIGHT_STAR_COUNT * 0.8),
+         size: 1.4 + (i % 3) * 0.9,
+         alpha: 0.5 + (i % 2) * 0.4
+     });
+ }
 
  // Lobby/menu music that should play infinitely until entering a match
  const lobbyMusic = new Audio('/loopy-loop-2-37058.mp3');
@@ -839,9 +884,9 @@ button:disabled {
 
  // Power-up UI slots
  const powerUpSlots = {
-     speed: document.querySelector('.power-up-slot[data-type="speed"]'),
-     shield: document.querySelector('.power-up-slot[data-type="shield"]'),
      multishot: document.querySelector('.power-up-slot[data-type="multishot"]'),
+     homing: document.querySelector('.power-up-slot[data-type="homing"]'),
+     shield: document.querySelector('.power-up-slot[data-type="shield"]'),
  };
 
  // --- Game State ---
@@ -905,6 +950,10 @@ let player = {
 };
 let keysPressed = {};
 let gameLoopId = null;
+
+// Parallax offsets (updated each frame)
+let parallaxOffsetX = 0;
+let parallaxOffsetY = 0;
 
 // --- Screen Management ---
 function showScreen(screenId) {
@@ -1603,13 +1652,109 @@ function update(now) {
 }
 
 function draw() {
-    // Clear canvas
-    ctx.fillStyle = '#0a1128'; // Dark space blue background
+    // Draw background as deep universe with parallax nebula and richer starfield
+    // clear first
+    ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+
+    // compute subtle parallax based on time for gentle movement
+    const t = Date.now() * 0.0001;
+    parallaxOffsetX = Math.sin(t * 0.9) * 18;
+    parallaxOffsetY = Math.cos(t * 0.7) * 9;
+
+    // deep black base
+    ctx.fillStyle = '#000010';
+    ctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
+
+    // soft nebula bands using radial gradients for subtle color and parallax
+    (function drawNebula() {
+        const cx = gameCanvas.width * (0.5 + Math.sin(t * 0.12) * 0.02);
+        const cy = gameCanvas.height * (0.4 + Math.cos(t * 0.08) * 0.03);
+        const rg = ctx.createRadialGradient(
+            cx + parallaxOffsetX * 0.6, cy + parallaxOffsetY * 0.4, Math.min(gameCanvas.width, gameCanvas.height) * 0.05,
+            cx - parallaxOffsetX * 0.4, cy - parallaxOffsetY * 0.6, Math.max(gameCanvas.width, gameCanvas.height) * 0.9
+        );
+        rg.addColorStop(0, 'rgba(18,12,36,0.18)');
+        rg.addColorStop(0.35, 'rgba(34,20,60,0.10)');
+        rg.addColorStop(0.55, 'rgba(12,24,48,0.06)');
+        rg.addColorStop(1, 'rgba(0,0,0,0.0)');
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.fillStyle = rg;
+        ctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
+        ctx.globalCompositeOperation = 'source-over';
+    })();
+
+    // Enhanced starfield with layers (small, medium, bright) and twinkle (positions are now static)
+    const now = Date.now();
+    ctx.save();
+    // layer 1: background faint dots (small stars) - static positions based on initial normalized coordinates
+    for (let i = 0; i < stars.length; i++) {
+        const s = stars[i];
+        const px = Math.floor(s.x * gameCanvas.width);
+        const py = Math.floor(s.y * gameCanvas.height);
+        // twinkle only affects alpha, not position
+        s.phase += s.twinkleSpeed * 1.0;
+        const a = Math.max(0, s.baseAlpha * 0.8 + Math.sin(s.phase) * 0.35);
+        ctx.fillStyle = `rgba(255,255,255,${a})`;
+        ctx.beginPath();
+        ctx.arc(px, py, Math.max(0.6, s.size * 0.7), 0, Math.PI * 2);
+        ctx.fill();
+    }
+    // layer 2: medium stars (sparser, brighter) - use precomputed mediumStars so they remain fixed
+    for (let i = 0; i < mediumStars.length; i++) {
+        const s = mediumStars[i];
+        const sx = Math.floor(s.xFrac * gameCanvas.width);
+        const sy = Math.floor(s.yFrac * gameCanvas.height);
+        const size = s.size;
+        const alpha = s.baseAlphaOffset; // static per-star alpha
+        ctx.fillStyle = `rgba(255,255,220,${alpha})`;
+        ctx.beginPath();
+        ctx.arc(sx, sy, size, 0, Math.PI*2);
+        ctx.fill();
+    }
+    // layer 3: occasional bright stars - fixed positions from brightStars
+    for (let i = 0; i < brightStars.length; i++) {
+        const b = brightStars[i];
+        const sx = Math.floor(b.xFrac * gameCanvas.width);
+        const sy = Math.floor(b.yFrac * gameCanvas.height);
+        const size = b.size;
+        const a = b.alpha;
+        ctx.fillStyle = `rgba(255,245,220,${a})`;
+        ctx.beginPath();
+        ctx.arc(sx, sy, size, 0, Math.PI*2);
+        ctx.fill();
+    }
+    ctx.restore();
+
+    // dark overlay gradient to keep foreground contrast (soft vignette)
+    const g = ctx.createLinearGradient(0, 0, 0, gameCanvas.height);
+    g.addColorStop(0, 'rgba(0,0,0,0.05)');
+    g.addColorStop(0.6, 'rgba(0,0,0,0.18)');
+    g.addColorStop(1, 'rgba(0,0,0,0.28)');
+    ctx.fillStyle = g;
     ctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
 
     // Draw player spaceship (player 1) — nose facing right
     // Only render player1 if they are still in the match and have lives remaining
     if (player._inMatch !== false && gameState.playerLives > 0 && !(gameState.isPlayerHit && Math.floor(Date.now() / PLAYER_FLASH_INTERVAL) % 2 === 0)) {
+        // If multishot active, draw an under-glow/pulse and muzzle flash effect
+        const multishotActive = !!gameState.activePowerUps.multishot;
+        let pulseAlpha = 0;
+        if (multishotActive && gameState.activePowerUps.multishot.startTime) {
+            const t = (Date.now() - gameState.activePowerUps.multishot.startTime) / 150; // speed up pulse
+            pulseAlpha = 0.45 + 0.25 * Math.sin(t * Math.PI * 2);
+        }
+
+        // Glow ring under the ship when multishot is active
+        if (multishotActive && pulseAlpha > 0) {
+            ctx.save();
+            ctx.globalCompositeOperation = 'lighter';
+            ctx.fillStyle = `rgba(80,220,255,${Math.max(0.12, pulseAlpha * 0.5)})`;
+            ctx.beginPath();
+            ctx.ellipse(player.x + player.width/2, player.y + player.height/2 + 6, player.width * 0.9, player.height * 0.6, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+
         // Main ship body (nose on the right)
         ctx.fillStyle = gameState.isPlayerSlowed ? '#3498db' : (gameState.isPlayerHit ? '#f1c40f' : '#e74c3c');
         ctx.beginPath();
@@ -1636,6 +1781,30 @@ function draw() {
         ctx.lineTo(player.x, player.y + player.height*0.6);
         ctx.closePath();
         ctx.fill();
+
+        // Additional forward muzzle-flash / tracer when multishot active
+        if (multishotActive) {
+            ctx.save();
+            ctx.globalCompositeOperation = 'lighter';
+            const flashStrength = 0.6 + 0.4 * Math.sin(Date.now() / 120);
+            // short bright cone in front of the nose
+            const fx = player.x + player.width;
+            const fy = player.y + player.height/2;
+            for (let i = 0; i < 3; i++) {
+                const offsetY = (i - 1) * 5;
+                ctx.fillStyle = `rgba(0,255,255,${0.14 * flashStrength})`;
+                ctx.beginPath();
+                ctx.moveTo(fx + 2, fy + offsetY - 2);
+                ctx.lineTo(fx + 28 + i * 6, fy + offsetY - 6);
+                ctx.lineTo(fx + 28 + i * 6, fy + offsetY + 6);
+                ctx.closePath();
+                ctx.fill();
+            }
+            // quick bright streaks
+            ctx.fillStyle = `rgba(0,255,255,${0.55 * flashStrength})`;
+            ctx.fillRect(fx + 18, fy - 2, 6, 4);
+            ctx.restore();
+        }
     }
 
     // Draw player2 if present (ensure visible) — draw facing right (opposite of player1)
@@ -1782,26 +1951,46 @@ function draw() {
         ctx.fill();
     });
 
-    // Draw enemy bullets
+    // Draw enemy bullets with per-bullet randomized visuals
     gameState.enemyBullets.forEach(bullet => {
-        // Plasma-style enemy bullets
-        const gradient = ctx.createRadialGradient(
-            bullet.x + bullet.width/2, bullet.y + bullet.height/2, 0,
-            bullet.x + bullet.width/2, bullet.y + bullet.height/2, bullet.width
-        );
-        
-        if (bullet.type === 'slow') {
-            gradient.addColorStop(0, '#ffff00');
-            gradient.addColorStop(1, 'rgba(255, 255, 0, 0.1)');
-        } else {
-            gradient.addColorStop(0, '#ff00ff');
-            gradient.addColorStop(1, 'rgba(255, 0, 255, 0.1)');
-        }
-        
-        ctx.fillStyle = gradient;
+        const centerX = bullet.x + (bullet.width/2 || 0);
+        const centerY = bullet.y + (bullet.height/2 || 0);
+        const v = bullet.visual || (bullet.type === 'slow' ? { color:'#ffff66', radius:7, glow:0.22 } : { color:'#ff66cc', radius:6, glow:0.2 });
+
+        // radial glow
+        const grad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, Math.max(10, v.radius * 4));
+        grad.addColorStop(0, hexToRgba(v.color, Math.min(0.95, v.glow + 0.35)));
+        grad.addColorStop(0.4, hexToRgba(v.color, v.glow));
+        grad.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = grad;
         ctx.beginPath();
-        ctx.arc(bullet.x + bullet.width/2, bullet.y + bullet.height/2, bullet.width, 0, Math.PI * 2);
+        ctx.arc(centerX, centerY, Math.max(10, v.radius * 4), 0, Math.PI * 2);
         ctx.fill();
+
+        // core
+        ctx.fillStyle = v.color;
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, v.radius, 0, Math.PI * 2);
+        ctx.fill();
+
+        // small bright center for piercing bullets
+        ctx.fillStyle = 'rgba(255,255,255,0.6)';
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, Math.max(1, v.radius * 0.28), 0, Math.PI * 2);
+        ctx.fill();
+
+        // a faint tracer line for faster bullets
+        if (Math.hypot(bullet.dx || 0, bullet.dy || 0) > ENEMY_BULLET_SPEED * 1.1) {
+            ctx.save();
+            ctx.globalAlpha = 0.45;
+            ctx.strokeStyle = hexToRgba(v.color, 0.22);
+            ctx.lineWidth = Math.max(1, v.radius * 0.4);
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(centerX - (bullet.dx || -1) * 1.6, centerY - (bullet.dy || 0) * 1.6);
+            ctx.stroke();
+            ctx.restore();
+        }
     });
 
     // Draw boss
@@ -1821,6 +2010,11 @@ function draw() {
     });
 
     // Draw Level Info (already updated in UI div)
+
+    // Draw shield rings if shield active (visual feedback)
+    if (gameState.activePowerUps.shield) {
+        drawShieldRings();
+    }
 }
 
  // --- Spawning Functions ---
@@ -2470,15 +2664,27 @@ function spawnEnemyBullet(sourceX, sourceY, type = 'normal', now, aimed = false)
         // ignore autoplay/play errors silently
     }
 
+    // Assign randomized visual style per bullet (color, radius, glow intensity)
+    const visuals = [
+        { color: '#ff66cc', radius: 5, glow: 0.22 },
+        { color: '#66ffea', radius: 6, glow: 0.26 },
+        { color: '#ffd166', radius: 7, glow: 0.28 },
+        { color: '#9b59b6', radius: 6, glow: 0.2 },
+        { color: '#ff6b6b', radius: 5, glow: 0.24 },
+        { color: '#ffffff', radius: 4, glow: 0.18 }
+    ];
+    const visual = visuals[Math.floor(Math.random() * visuals.length)];
+
     gameState.enemyBullets.push({
         x: sourceX, // Start from provided coords
         y: sourceY - 3, // Center vertically
-        width: 8,
-        height: 6,
+        width: visual.radius, // draw using radius as primary size
+        height: visual.radius,
         type: type, // 'normal' or 'slow'
         dx: dx,
         dy: dy,
-        birthTime: now
+        birthTime: now,
+        visual // store style for draw step
     });
 }
 
@@ -2499,7 +2705,7 @@ function spawnEnemyBullet(sourceX, sourceY, type = 'normal', now, aimed = false)
      }
  }
 
- // --- Power-up Helpers ---
+  // --- Power-up Helpers ---
  function spawnPowerUpPickup(x, y) {
      const types = ['multishot', 'homing', 'shield'];
      const type = types[Math.floor(Math.random() * types.length)];
@@ -2511,6 +2717,123 @@ function spawnEnemyBullet(sourceX, sourceY, type = 'normal', now, aimed = false)
          type,
          spawnTime: Date.now()
      });
+ }
+
+ // When shield absorbs a hit, call this to decrement ring/hp and trigger final defensive explosion when depleted.
+ function triggerShieldHit(target) {
+     const shield = gameState.activePowerUps.shield;
+     if (!shield) return;
+     // consume one HP
+     shield.hp = Math.max(0, (shield.hp || shield.rings || 3) - 1);
+     shield.rings = shield.hp;
+     // small ring-break particle at target ship
+     if (target === 'player') {
+         createExplosion(player.x + player.width/2, player.y + player.height/2, '#66ddff');
+     } else if (target === 'player2' && player2) {
+         createExplosion(player2.x + player2.width/2, player2.y + player2.height/2, '#66ff88');
+     } else {
+         // generic center explosion as fallback
+         createExplosion(gameCanvas.width/2, gameCanvas.height/2, '#66ddff');
+     }
+
+     // Play a subtle break sound (use existing explosionSound for feedback)
+     try { explosionSound.currentTime = 0; explosionSound.play(); } catch (e) {}
+
+     // If shield depleted, trigger defensive explosion effect and remove shield
+     if (shield.hp <= 0) {
+         // Defensive explosion: spawn many small outward particles and damage enemy bullets/enemies nearby
+         const cx = (target === 'player' ? player.x + player.width/2 :
+                    (target === 'player2' && player2 ? player2.x + player2.width/2 : gameCanvas.width/2));
+         const cy = (target === 'player' ? player.y + player.height/2 :
+                    (target === 'player2' && player2 ? player2.y + player2.height/2 : gameCanvas.height/2));
+         // Visual blast
+         createExplosion(cx, cy, '#ffdd66');
+         // Clear enemy bullets in radius and damage nearby enemies/boss
+         const BLAST_RADIUS = 180;
+         // remove enemy bullets within radius
+         gameState.enemyBullets = gameState.enemyBullets.filter(b => {
+             const d = Math.hypot((b.x + b.width/2) - cx, (b.y + b.height/2) - cy);
+             return d > BLAST_RADIUS;
+         });
+         // Damage enemies inside radius moderately
+         for (let i = gameState.enemies.length - 1; i >= 0; i--) {
+             const e = gameState.enemies[i];
+             const ex = e.x + e.width/2;
+             const ey = e.y + e.height/2;
+             const d = Math.hypot(ex - cx, ey - cy);
+             if (d <= BLAST_RADIUS) {
+                 e.health -= 3; // apply area damage
+                 if (e.health <= 0) {
+                     gameState.enemies.splice(i,1);
+                     createExplosion(e.x + e.width/2, e.y + e.height/2, 'yellow');
+                 } else {
+                     createExplosion(e.x + e.width/2, e.y + e.height/2, '#ffcc88');
+                 }
+             }
+         }
+         // Damage boss if inside radius
+         if (gameState.boss) {
+             const bx = gameState.boss.x + gameState.boss.width/2;
+             const by = gameState.boss.y + gameState.boss.height/2;
+             const dBoss = Math.hypot(bx - cx, by - cy);
+             if (dBoss <= BLAST_RADIUS) {
+                 gameState.boss.health -= 12; // bigger hit to boss
+                 createExplosion(bx, by, 'red');
+             }
+         }
+
+         // finally remove the shield
+         delete gameState.activePowerUps.shield;
+     }
+ }
+
+ // Draw shield rings around player(s)
+ function drawShieldRings() {
+     const shield = gameState.activePowerUps.shield;
+     if (!shield) return;
+     const rings = shield.rings || 0;
+     ctx.save();
+     ctx.lineWidth = 3;
+     // Player 1 rings
+     if (gameState.playerLives > 0) {
+         const cx = player.x + player.width/2;
+         const cy = player.y + player.height/2;
+         for (let r = 0; r < rings; r++) {
+             const radius = Math.max(player.width, player.height) + 6 + r * 8;
+             ctx.strokeStyle = `rgba(102,221,255,${0.35 - r*0.08})`;
+             ctx.beginPath();
+             ctx.arc(cx, cy, radius, 0, Math.PI*2);
+             ctx.stroke();
+         }
+         // draw broken ring placeholders for missing rings (faded)
+         for (let r = rings; r < 3; r++) {
+             const radius = Math.max(player.width, player.height) + 6 + r * 8;
+             ctx.strokeStyle = `rgba(255,255,255,0.06)`;
+             ctx.beginPath();
+             ctx.arc(cx, cy, radius, 0, Math.PI*2);
+             ctx.stroke();
+         }
+     }
+     // Player 2 rings (if present)
+     if (player2) {
+         const cx2 = player2.x + player2.width/2;
+         const cy2 = player2.y + player2.height/2;
+         for (let r = 0; r < rings; r++) {
+             const radius = Math.max(player2.width, player2.height) + 6 + r * 8;
+             ctx.strokeStyle = `rgba(102,255,136,${0.35 - r*0.08})`;
+             ctx.beginPath();
+             ctx.arc(cx2, cy2, radius, 0, Math.PI*2);
+             ctx.stroke();
+         }
+         for (let r = rings; r < 3; r++) {
+             const radius = Math.max(player2.width, player2.height) + 6 + r * 8;
+             ctx.strokeStyle = `rgba(255,255,255,0.06)`;
+             ctx.beginPath();
+             ctx.arc(cx2, cy2, radius, 0, Math.PI*2);
+             ctx.stroke();
+         }
+     }
+     ctx.restore();
  }
 
  function updatePowerUpUI() {
@@ -2566,42 +2889,49 @@ function spawnEnemyBullet(sourceX, sourceY, type = 'normal', now, aimed = false)
  }
 
  function activatePowerUp(type) {
-     const now = Date.now();
-     // Prevent power-up activation while multiplayer (player2) is active
-     if (gameState.powerUpsDisabled) {
-         try { failSound && failSound.play(); } catch(e) {}
-         console.log("Attempted to activate power-up while multiplayer is active; action blocked.");
-         return;
-     }
-     if (!canUsePowerUp(type)) {
-         // play failure sound
-         try { failSound && failSound.play(); } catch(e) {}
-         return;
-     }
-     consumePowerUpUse(type);
-     switch (type) {
-         case 'multishot':
-             gameState.activePowerUps.multishot = { expiresAt: now + POWERUP_MULTISHOT_DURATION };
-             // reduce cooldown for duration (2x firing effect by doubling rate)
-             break;
-         case 'homing':
-             gameState.activePowerUps.homing = { expiresAt: now + POWERUP_HOMING_DURATION };
-             break;
-         case 'shield':
-             gameState.activePowerUps.shield = { expiresAt: now + POWERUP_SHIELD_DURATION };
-             break;
-     }
-     // Play confirm sound
-     try { shootSound && shootSound.play(); } catch(e) {}
- }
+    const now = Date.now();
+    // Prevent power-up activation while multiplayer (player2) is active
+    if (gameState.powerUpsDisabled) {
+        try { failSound && failSound.play(); } catch(e) {}
+        console.log("Attempted to activate power-up while multiplayer is active; action blocked.");
+        return;
+    }
+    if (!canUsePowerUp(type)) {
+        // play failure sound
+        try { failSound && failSound.play(); } catch(e) {}
+        return;
+    }
+    consumePowerUpUse(type);
+    switch (type) {
+        case 'multishot':
+            // Record startTime so draw can animate a pulsing visual while active
+            gameState.activePowerUps.multishot = { expiresAt: now + POWERUP_MULTISHOT_DURATION, startTime: now };
+            break;
+        case 'homing':
+            gameState.activePowerUps.homing = { expiresAt: now + POWERUP_HOMING_DURATION };
+            break;
+        case 'shield':
+            // Shield becomes a small HP pool (3 hits) represented visually by 3 rings.
+            // Shield now persists until its hp/rings are consumed; do not set a time-based expiry.
+            gameState.activePowerUps.shield = {
+                hp: 3,
+                rings: 3 // visual rings count
+            };
+            break;
+    }
+    // Play confirm sound
+    try { shootSound && shootSound.play(); } catch(e) {}
+}
 
  // Clean up expired power-ups
  function updateActivePowerUps(now) {
-     ['multishot','homing','shield'].forEach(k => {
-         if (gameState.activePowerUps[k] && now > gameState.activePowerUps[k].expiresAt) {
+     // Only time-limited power-ups expire automatically. Shield persists until its hp/rings are consumed.
+     ['multishot','homing'].forEach(k => {
+         if (gameState.activePowerUps[k] && gameState.activePowerUps[k].expiresAt && now > gameState.activePowerUps[k].expiresAt) {
              delete gameState.activePowerUps[k];
          }
      });
+     // Keep shield until its hp reaches 0 (handled by triggerShieldHit).
  }
 
 // --- Collision Detection ---
@@ -2665,10 +2995,11 @@ function handleCollisions(now) {
         const bullet = gameState.enemyBullets[i];
         // Check collision with player 1 if alive and not invulnerable
         if (gameState.playerLives > 0 && !gameState.isPlayerHit && checkCollision(bullet, player)) {
-            // If shield power-up active for P1, ignore bullet collision
+            // If shield power-up active for P1, consume a shield hit instead of damaging the player
             if (gameState.activePowerUps.shield) {
                 gameState.enemyBullets.splice(i, 1);
-                createExplosion(player.x + player.width/2, player.y + player.height/2, 'cyan');
+                // apply shield hit sequence
+                triggerShieldHit('player');
                 continue;
             }
             gameState.enemyBullets.splice(i, 1);
@@ -2678,10 +3009,10 @@ function handleCollisions(now) {
 
         // Check collision with player 2 if exists and alive and not invulnerable
         if (player2 && gameState.player2Lives > 0 && !player2._isHit && checkCollision(bullet, player2)) {
-            // For now, use same shield behavior for P1 (global shield) - if shield active, ignore
+            // Shield is global; if active it protects both players and consumes a shield hit
             if (gameState.activePowerUps.shield) {
                 gameState.enemyBullets.splice(i, 1);
-                createExplosion(player2.x + player2.width/2, player2.y + player2.height/2, 'cyan');
+                triggerShieldHit('player2');
                 continue;
             }
             gameState.enemyBullets.splice(i, 1);
@@ -2901,8 +3232,17 @@ function handlePlayerHit(target, damageType, now) {
              // Inform user via sound that power-ups are disabled in multiplayer
              try { failSound && failSound.play(); } catch(e) {}
          } else {
+             // Pickup key
              if (e.key.toLowerCase() === 'z') {
                  handlePickupOnZ();
+             }
+             // Numeric power-up shortcuts: 1 -> multishot, 2 -> homing, 3 -> shield
+             else if (e.key === '1') {
+                 if (canUsePowerUp('multishot')) activatePowerUp('multishot'); else try { failSound && failSound.play(); } catch(e){}
+             } else if (e.key === '2') {
+                 if (canUsePowerUp('homing')) activatePowerUp('homing'); else try { failSound && failSound.play(); } catch(e){}
+             } else if (e.key === '3') {
+                 if (canUsePowerUp('shield')) activatePowerUp('shield'); else try { failSound && failSound.play(); } catch(e){}
              } else if (e.key.toLowerCase() === 'x') {
                  // Use homing power-up manually (X)
                  if (canUsePowerUp('homing')) activatePowerUp('homing');
