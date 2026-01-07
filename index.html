@@ -416,12 +416,18 @@ button:disabled {
 }
 
 .lobby-button {
-    padding: 18px 45px; /* Larger padding */
-    font-size: 1.3em; /* Larger font */
+    padding: 14px 22px;
+    font-size: 1.05em;
     background-color: var(--color-button-green);
-    box-shadow: 0 6px 0 darken(var(--color-button-green), 20%), 0 8px 10px var(--shadow-strong-color);
-    letter-spacing: 1.5px;
-    animation: pulse 1.5s infinite ease-in-out;
+    box-shadow: 0 6px 0 rgba(0,0,0,0.12), 0 8px 10px var(--shadow-strong-color);
+    letter-spacing: 1.2px;
+    animation: pulse 1.6s infinite ease-in-out;
+    min-width: 140px;
+    flex: 1 1 auto; /* allow buttons to shrink/grow in available space */
+    max-width: 42%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 .lobby-button:hover {
     background-color: var(--color-button-green-hover);
@@ -436,22 +442,23 @@ button:disabled {
 
 .lobby-background {
     position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
+    inset: 0;
     overflow: hidden;
     z-index: -1;
     display: flex;
     justify-content: center;
     align-items: center;
-    opacity: 0.1; /* Still subtle */
+    opacity: 0.06; /* More subtle */
+    pointer-events: none; /* background shouldn't block interactions */
+    padding: 16px;
 }
-.plane-icon { /* Style the SVG placeholder if kept */
-    width: 55%;
-    height: 55%;
-    filter: drop-shadow(0 0 10px var(--color-secondary));
-    animation: flyUpDown 4s ease-in-out infinite, pulseGlow 2s ease-in-out infinite alternate;
+.plane-icon {
+    width: min(360px, 48%);
+    height: auto;
+    max-height: 48%;
+    filter: drop-shadow(0 0 8px var(--color-secondary));
+    animation: flyUpDown 5s ease-in-out infinite, pulseGlow 2.5s ease-in-out infinite alternate;
+    transform-origin: center;
 }
 
 @keyframes flyUpDown {
@@ -644,9 +651,10 @@ button:disabled {
 <div id="lobby-screen" class="screen">
              <h1 class="game-title">Aero Aces</h1>
              <p class="game-subtitle">Prepare-se para a batalha aérea!</p>
-             <div style="display:flex;gap:12px;align-items:center;justify-content:center;">
+             <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:center;max-width:100%;padding:6px;">
                  <button id="start-game-button" class="lobby-button">Iniciar Jogo</button>
-                 <button id="help-multiplayer-button" class="lobby-button nav-button" style="background-color:#3498db;">Ajuda (Multiplayer)</button>
+                 <button id="start-versus-button" class="lobby-button nav-button" style="background-color:#e67e22;min-width:160px;">Versus (1v1)</button>
+                 <button id="help-multiplayer-button" class="lobby-button nav-button" style="background-color:#3498db;min-width:160px;">Ajuda (Multiplayer)</button>
              </div>
              <div style="margin-top:12px;font-size:0.95em;color:rgba(255,255,255,0.95);display:flex;justify-content:center;gap:10px;align-items:center;">
                  <div class="header-credit" style="background:transparent;padding:6px 12px;border-radius:8px;">byCalzSan <span class="neon-contact">contato 11951620762</span></div>
@@ -684,6 +692,9 @@ button:disabled {
              </header>
             <div id="world-list" style="padding:18px;">
                 <!-- World buttons will be generated here -->
+            </div>
+            <div style="margin-top:12px; display:flex; justify-content:center; gap:10px;">
+                <button id="back-to-lobby-from-worlds" class="nav-button back" style="min-width:160px;">Voltar para Lobby</button>
             </div>
         </div>
 
@@ -1259,15 +1270,39 @@ function startLevel(world, level, type) {
         gameState.currentWave = 1;
         spawnWave(gameState.currentWave); // Spawn first wave
         levelStatusDiv.textContent = `Onda: ${gameState.currentWave} / ${REGULAR_LEVEL_WAVES}`;
+    } else if (type === 'versus') {
+        // Versus mode: enable multiplayer, spawn player2 if not present, no enemies or boss.
+        gameState.multiplayerActive = true;
+        gameState.powerUpsDisabled = false; // keep power-ups allowed if desired; can be adjusted
+        // ensure player2 exists
+        if (!player2) {
+            togglePlayer2();
+        }
+        // Reset both players' lives and position them on opposite sides of the arena
+        gameState.playerLives = PLAYER_STARTING_LIVES;
+        gameState.player2Lives = PLAYER_STARTING_LIVES;
+        // place P1 on the left and P2 on the right (opposite sides)
+        player._inMatch = true;
+        player.x = 40;
+        player.y = gameCanvas.height / 2 - player.height / 2;
+        if (player2) {
+            player2._inMatch = true;
+            player2.x = Math.max( Math.floor(gameCanvas.width - 120), gameCanvas.width - 140 );
+            player2.y = gameCanvas.height / 2 - player2.height / 2;
+            // ensure player2 faces left (shoots left)
+            player2.lastMoveX = -1;
+            player2.lastMoveY = 0;
+        }
+        levelStatusDiv.textContent = `Versus — P1: ${gameState.playerLives} vs P2: ${gameState.player2Lives}`;
     } else { // Boss level
         spawnBoss(world, level);
         levelStatusDiv.textContent = `Chefão - Vida: ${gameState.boss?.health || 'N/A'}`;
     }
 
     // reset both players' lives for the level (player2 only if active)
-    gameState.playerLives = PLAYER_STARTING_LIVES;
+    gameState.playerLives = gameState.playerLives || PLAYER_STARTING_LIVES;
     if (player2) {
-        gameState.player2Lives = PLAYER_STARTING_LIVES;
+        gameState.player2Lives = gameState.player2Lives || PLAYER_STARTING_LIVES;
         player2InfoDiv.style.display = 'inline-block';
     } else {
         gameState.player2Lives = 0;
@@ -1807,35 +1842,35 @@ function draw() {
         }
     }
 
-    // Draw player2 if present (ensure visible) — draw facing right (opposite of player1)
+    // Draw player2 if present (ensure visible) — draw facing left (nose toward left)
     if (player2) {
         // Apply same hit-flash logic as player1: blink while _isHit is true
         const p2IsVisible = !(player2._isHit && Math.floor(Date.now() / PLAYER_FLASH_INTERVAL) % 2 === 0);
         if (p2IsVisible) {
-            // Use green tint for player2 and draw nose to the right
+            // Use green tint for player2 and draw nose to the left
             ctx.fillStyle = '#2ecc71';
             ctx.beginPath();
-            ctx.moveTo(player2.x + player2.width, player2.y + player2.height/2); // Nose (right)
-            ctx.lineTo(player2.x + player2.width*0.7, player2.y + player2.height*0.2);
-            ctx.lineTo(player2.x, player2.y + player2.height*0.3);
-            ctx.lineTo(player2.x + player2.width*0.3, player2.y + player2.height/2);
-            ctx.lineTo(player2.x, player2.y + player2.height*0.7);
-            ctx.lineTo(player2.x + player2.width*0.7, player2.y + player2.height*0.8);
+            ctx.moveTo(player2.x, player2.y + player2.height/2); // Nose (left)
+            ctx.lineTo(player2.x + player2.width*0.3, player2.y + player2.height*0.2);
+            ctx.lineTo(player2.x + player2.width, player2.y + player2.height*0.3);
+            ctx.lineTo(player2.x + player2.width*0.7, player2.y + player2.height/2);
+            ctx.lineTo(player2.x + player2.width, player2.y + player2.height*0.7);
+            ctx.lineTo(player2.x + player2.width*0.3, player2.y + player2.height*0.8);
             ctx.closePath();
             ctx.fill();
 
-            // cockpit
+            // cockpit (shifted toward front-left)
             ctx.fillStyle = '#ecf0f1';
             ctx.beginPath();
-            ctx.arc(player2.x + player2.width*0.8, player2.y + player2.height/2, player2.height/5, 0, Math.PI * 2);
+            ctx.arc(player2.x + player2.width*0.2, player2.y + player2.height/2, player2.height/5, 0, Math.PI * 2);
             ctx.fill();
 
-            // engine exhaust (on the left side for player2)
+            // engine exhaust (on the right side for player2 now)
             ctx.fillStyle = '#f39c12';
             ctx.beginPath();
-            ctx.moveTo(player2.x, player2.y + player2.height*0.4);
-            ctx.lineTo(player2.x - 5, player2.y + player2.height/2);
-            ctx.lineTo(player2.x, player2.y + player2.height*0.6);
+            ctx.moveTo(player2.x + player2.width, player2.y + player2.height*0.4);
+            ctx.lineTo(player2.x + player2.width + 6, player2.y + player2.height/2);
+            ctx.lineTo(player2.x + player2.width, player2.y + player2.height*0.6);
             ctx.closePath();
             ctx.fill();
         }
@@ -2031,7 +2066,7 @@ function draw() {
      const homingActive = !!gameState.activePowerUps.homing;
 
      // base bullet
-     const createBullet = (ox, oy, homing=false) => {
+     const createBullet = (ox, oy, homing=false, owner='p1') => {
          gameState.playerBullets.push({
              x: ox,
              y: oy,
@@ -2040,16 +2075,17 @@ function draw() {
              dx: PLAYER_BULLET_SPEED * 1.5,
              dy: 0,
              birthTime: now,
-             homing
+             homing,
+             owner // 'p1' or 'p2'
          });
      };
 
      // If multishot active, fire two bullets (slightly offset/up-down) and optionally homing
      if (multishotActive) {
-         createBullet(player.x + player.width, player.y + player.height / 2 - 6, homingActive);
-         createBullet(player.x + player.width, player.y + player.height / 2 + 6, homingActive);
+         createBullet(player.x + player.width, player.y + player.height / 2 - 6, homingActive, 'p1');
+         createBullet(player.x + player.width, player.y + player.height / 2 + 6, homingActive, 'p1');
      } else {
-         createBullet(player.x + player.width, player.y + player.height / 2 - 2, homingActive);
+         createBullet(player.x + player.width, player.y + player.height / 2 - 2, homingActive, 'p1');
      }
 
      // Slightly reduce cooldown if multishot (feel more powerful) by halving shootCooldown while active
@@ -2990,6 +3026,45 @@ function handleCollisions(now) {
         }
     }
 
+    // Player Bullets vs Players (for Versus / friendly-fire)
+    if (gameState.activeLevel && gameState.activeLevel.type === 'versus') {
+        for (let i = gameState.playerBullets.length - 1; i >= 0; i--) {
+            const bullet = gameState.playerBullets[i];
+            // p1 bullets hit p2
+            if (bullet.owner === 'p1' && player2 && gameState.player2Lives > 0 && checkCollision(bullet, player2)) {
+                gameState.playerBullets.splice(i, 1);
+                // apply damage to player2
+                gameState.player2Lives = Math.max(0, gameState.player2Lives - 1);
+                if (player2LivesSpan) player2LivesSpan.textContent = gameState.player2Lives;
+                createExplosion(player2.x + player2.width/2, player2.y + player2.height/2, 'lime');
+                try { explosionSound.currentTime = 0; explosionSound.play(); } catch(e) {}
+                // mark death/removal
+                if (gameState.player2Lives <= 0) {
+                    player2._inMatch = false;
+                    player2 = null;
+                    gameState.multiplayerActive = false;
+                    gameState.powerUpsDisabled = false;
+                    document.querySelectorAll('.power-up-slot').forEach(btn => { try { btn.disabled = false; } catch(e){} });
+                }
+                continue;
+            }
+            // p2 bullets hit p1
+            if (bullet.owner === 'p2' && gameState.playerLives > 0 && checkCollision(bullet, player)) {
+                gameState.playerBullets.splice(i, 1);
+                gameState.playerLives = Math.max(0, gameState.playerLives - 1);
+                if (playerLivesSpan) playerLivesSpan.textContent = gameState.playerLives;
+                createExplosion(player.x + player.width/2, player.y + player.height/2, 'orange');
+                try { explosionSound.currentTime = 0; explosionSound.play(); } catch(e) {}
+                if (gameState.playerLives <= 0) {
+                    player._inMatch = false;
+                    player.x = -9999;
+                    player.y = -9999;
+                }
+                continue;
+            }
+        }
+    }
+
      // --- Enemy Bullets vs Players (check both P1 and P2) ---
     for (let i = gameState.enemyBullets.length - 1; i >= 0; i--) {
         const bullet = gameState.enemyBullets[i];
@@ -3128,15 +3203,15 @@ function handlePlayerHit(target, damageType, now) {
      }
 
      if (!player2) {
-         // Spawn second ship to the right side near center and give it lives
+         // Spawn second ship on the right side near center and give it lives; P2 will shoot left
          player2 = {
-             x: 80,
+             x: Math.max( Math.floor(gameCanvas.width - 120), gameCanvas.width - 140 ),
              y: gameCanvas.height / 2 - PLAYER_HEIGHT / 2 + 40,
              width: PLAYER_WIDTH,
              height: PLAYER_HEIGHT,
              speed: 3.5,
              baseSpeed: 3.5,
-             lastMoveX: -1, // default face left (toward enemies)
+             lastMoveX: -1, // face left toward player1/enemies
              lastMoveY: 0,
              _isHit: false,
              _hitTimestamp: 0,
@@ -3145,7 +3220,7 @@ function handlePlayerHit(target, damageType, now) {
          gameState.player2Lives = PLAYER_STARTING_LIVES;
          if (player2LivesSpan) player2LivesSpan.textContent = gameState.player2Lives;
          if (player2InfoDiv) player2InfoDiv.style.display = 'inline-block';
-         console.log("Player2 spawned");
+         console.log("Player2 spawned (right side)");
 
          // Mark multiplayer active and disable power-ups while multiplayer is active
          gameState.multiplayerActive = true;
@@ -3173,16 +3248,17 @@ function handlePlayerHit(target, damageType, now) {
  function shootPlayer2Bullet(now) {
      if (!player2) return;
      try { playerShootSound.currentTime = 0; playerShootSound.play(); } catch(e) {}
-     // create a bullet moving right like player1 but from player2
+     // create a bullet moving left (toward P1/enemies) from player2 (owner 'p2')
      gameState.playerBullets.push({
-         x: player2.x + player2.width,
+         x: player2.x - 6, // spawn slightly left of P2 nose
          y: player2.y + player2.height / 2 - 2,
          width: 15,
          height: 5,
-         dx: PLAYER_BULLET_SPEED * 1.4,
+         dx: -PLAYER_BULLET_SPEED * 1.4, // negative dx so bullet goes left
          dy: 0,
          birthTime: now,
-         homing: !!gameState.activePowerUps.homing
+         homing: !!gameState.activePowerUps.homing,
+         owner: 'p2'
      });
      player2LastShotTime = now;
  }
@@ -3281,6 +3357,32 @@ nextWorldButton.addEventListener('click', goToNextWorld);
 worldCompleteBackToWorldsButton.addEventListener('click', goBackToWorldSelect);
 gameOverBackButton.addEventListener('click', goBackToLevelSelect);
 startGameButton.addEventListener('click', () => showScreen('worldSelect'));
+
+// Back to lobby button on world select
+const backToLobbyFromWorlds = document.getElementById('back-to-lobby-from-worlds');
+if (backToLobbyFromWorlds) {
+    backToLobbyFromWorlds.addEventListener('click', () => {
+        // return to lobby screen
+        showScreen('lobby');
+    });
+}
+
+// Versus button: spawn both players and go directly into a versus match (1v1)
+const startVersusButton = document.getElementById('start-versus-button');
+if (startVersusButton) {
+    startVersusButton.addEventListener('click', () => {
+        // Prepare a lightweight versus match: set activeLevel to a dummy versus and open game screen
+        // Ensure player2 is spawned
+        if (!player2) togglePlayer2();
+        // Set uses reset and ensure both players visible
+        gameState.playerLives = PLAYER_STARTING_LIVES;
+        gameState.player2Lives = PLAYER_STARTING_LIVES;
+        player._inMatch = true;
+        if (player2) player2._inMatch = true;
+        // Start a versus "level" (world 0 / level 0)
+        startLevel(0, 0, 'versus');
+    });
+}
 
 // Help / Multiplayer UI handlers
 const helpBtn = document.getElementById('help-multiplayer-button');
