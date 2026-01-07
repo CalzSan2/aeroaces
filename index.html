@@ -1,0 +1,3099 @@
+
+
+
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aero Aces</title>
+    <!-- Import Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    
+<style>
+/* Import Font */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+:root {
+    --font-primary: 'Press Start 2P', cursive;
+    --color-bg-start: #4a69bd; /* Royal Blue */
+    --color-bg-end: #1e3799; /* Darker Blue */
+    --color-container-bg: rgba(255, 255, 255, 0.95); /* Slightly transparent white */
+    --color-primary: #2c3e50; /* Midnight Blue */
+    --color-secondary: #3498db; /* Peter River Blue */
+    --color-accent: #e74c3c; /* Alizarin Red */
+    --color-highlight: #f1c40f; /* Sun Flower Yellow */
+    --color-text: #2c3e50;
+    --color-text-light: #f8f9fa; /* Very Light Grey/White */
+    --color-border: #bdc3c7; /* Silver */
+    --color-button-green: #2ecc71; /* Emerald */
+    --color-button-green-hover: #27ae60; /* Nephritis */
+    --color-button-orange: #f39c12; /* Orange */
+    --color-button-orange-hover: #e67e22; /* Carrot */
+    --color-button-blue: #3498db; /* Peter River */
+    --color-button-blue-hover: #2980b9; /* Belize Hole */
+    --color-button-red: #e74c3c; /* Alizarin */
+    --color-button-red-hover: #c0392b; /* Pomegranate */
+    --color-disabled: #95a5a6; /* Concrete */
+    --color-disabled-text: #7f8c8d; /* Asbestos */
+    --color-canvas-bg: #87CEEB; /* Sky Blue */
+    --color-ui-bg: rgba(44, 62, 80, 0.9); /* Darker semi-transparent */
+    --color-completion-star: #e74c3c; /* Alizarin Red for the star */
+
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --shadow-strong-color: rgba(0, 0, 0, 0.2);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    /* Updated background gradient */
+    background: linear-gradient(135deg, var(--color-bg-start) 0%, var(--color-bg-end) 100%);
+    margin: 0;
+    overflow: hidden; /* Prevent scrolling */
+    color: var(--color-text);
+}
+
+#game-container {
+    border: 5px solid var(--color-primary); /* Thicker border */
+    background-color: var(--color-container-bg);
+    padding: 25px;
+    text-align: center;
+    /* Enhanced shadow */
+    box-shadow: 0 10px 25px var(--shadow-strong-color), 0 0 0 12px rgba(255, 255, 255, 0.5);
+    border-radius: 15px; /* Slightly more rounded */
+    width: 95vw;
+    max-width: 900px;
+    height: 90vh;
+    max-height: 700px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+header {
+    border-bottom: 3px dashed var(--color-secondary); /* Thicker, dashed border */
+    padding: 14px 10px;
+    margin-bottom: 22px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+/* World-select specific header styling for a nicer card look */
+#world-select-screen header {
+    background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid rgba(255,255,255,0.06);
+    box-shadow: 0 6px 18px rgba(16,24,40,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+/* Title block inside headers */
+header .title-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+header h2 {
+    margin: 0;
+    font-size: 1.25em;
+    color: var(--color-primary);
+    letter-spacing: 0.6px;
+}
+header h3 {
+    margin: 4px 0 0 0;
+    font-size: 0.85em;
+    color: var(--color-secondary);
+}
+
+/* Creator credit (high-contrast black neon badge) */
+.header-credit {
+    font-size: 0.95em;
+    color: #f1c40f; /* neon text color */
+    background: #000000; /* solid black for strong contrast */
+    padding: 8px 14px;
+    border-radius: 10px; /* pill-like but not fully circular */
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.6), 0 0 18px rgba(241,196,15,0.14);
+    /* Strong neon glow for readability */
+    text-shadow:
+        0 0 8px rgba(241,196,15,0.95),
+        0 0 18px rgba(241,196,15,0.6),
+        0 0 28px rgba(241,196,15,0.25);
+    border: 1px solid rgba(241,196,15,0.18);
+    backdrop-filter: blur(4px);
+    font-weight: 700;
+}
+
+/* additional neon utility for inline contact text */
+.neon-contact {
+    color: #f1c40f;
+    font-weight: 700;
+    text-shadow:
+        0 0 8px rgba(241,196,15,0.95),
+        0 0 20px rgba(241,196,15,0.6),
+        0 0 28px rgba(46,204,113,0.12);
+}
+
+/* Make progress info more distinct in header */
+#progress-info {
+    font-size: 0.85em;
+    color: var(--color-text-light);
+    background: linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    padding: 8px 12px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid rgba(255,255,255,0.03);
+}
+#progress-info span {
+    color: var(--color-highlight);
+    font-weight: bold;
+}
+
+h1, h2, h3 {
+    margin: 0 0 15px 0;
+    color: var(--color-primary);
+    /* Softer text shadow */
+    text-shadow: 2px 2px 0px rgba(189, 195, 199, 0.6); /* Silver shadow */
+}
+h1 { font-size: 1.8em; }
+h2 { font-size: 1.4em; }
+h3 {
+    font-size: 1.1em;
+    color: var(--color-secondary);
+    text-shadow: 1px 1px 0px rgba(44, 62, 80, 0.2);
+}
+
+.game-title {
+    font-size: 3em; /* Larger title */
+    color: var(--color-accent);
+    margin-bottom: 15px;
+    text-shadow: 3px 3px 0px var(--color-primary), -3px -3px 0px var(--color-secondary); /* More complex shadow */
+}
+.game-subtitle {
+    font-size: 1em; /* Slightly larger subtitle */
+    color: var(--color-secondary);
+    margin-bottom: 40px; /* More space */
+    font-weight: normal; /* Ensure it's not bold */
+}
+
+#progress-info {
+    font-size: 0.8em;
+    color: var(--color-secondary);
+    background: rgba(255, 255, 255, 0.7);
+    padding: 5px 10px;
+    border-radius: 5px;
+    display: inline-block; /* Fit content */
+    margin-top: 5px;
+}
+#progress-info span {
+    color: var(--color-primary);
+    font-weight: bold;
+}
+
+.screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    flex-grow: 1;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: inherit;
+    padding-top: 0;
+    opacity: 0;
+    visibility: hidden;
+    /* Smoother slide transition */
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.6s;
+    transform: translateX(100%);
+    overflow-y: auto; /* Allow scrolling if content overflows */
+    /* Add background pattern for non-game screens */
+    background-image: radial-gradient(var(--color-border) 1px, transparent 1px);
+    background-size: 15px 15px;
+}
+
+/* Prevent background pattern on specific screens */
+#game-screen, #lobby-screen {
+    background-image: none;
+}
+
+.screen.inactive-left {
+    transform: translateX(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.6s;
+}
+
+.screen.active {
+    transform: translateX(0);
+    opacity: 1;
+    visibility: visible;
+    /* Adjust transition delay for visibility */
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1;
+}
+
+/* Specific Screen Top Padding Adjustments */
+#lobby-screen.active,
+#game-over-screen.active,
+#world-complete-screen.active {
+    padding-top: 50px;
+    justify-content: center;
+}
+
+#world-select-screen.active,
+#level-select-screen.active {
+    padding-top: 25px; /* Space below header */
+}
+#game-screen.active {
+     padding: 10px; /* Minimal padding for game area */
+     justify-content: center; /* Center canvas */
+}
+
+/* Button General Styles */
+button {
+    font-family: var(--font-primary);
+    padding: 12px 25px;
+    font-size: 0.9em;
+    cursor: pointer;
+    color: var(--color-text-light);
+    border: none;
+    border-radius: 8px;
+    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    background-color: var(--color-button-green);
+    /* Updated shadow for 3D effect */
+    box-shadow: 0 5px 0 darken(var(--color-button-green), 20%), 0 6px 8px var(--shadow-color);
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.4);
+    margin: 5px;
+    letter-spacing: 1px; /* Add letter spacing */
+}
+
+button:hover {
+    transform: translateY(-3px) scale(1.02); /* More lift */
+    box-shadow: 0 8px 0 darken(var(--color-button-green), 20%), 0 9px 12px var(--shadow-strong-color);
+}
+
+button:active {
+    transform: translateY(1px) scale(0.98); /* Push down effect */
+    box-shadow: 0 2px 0 darken(var(--color-button-green), 20%), 0 3px 5px var(--shadow-color);
+}
+
+button:disabled {
+    background-color: var(--color-disabled);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 0 5px 0 darken(var(--color-disabled), 15%);
+    color: var(--color-disabled-text); /* Lighter text for disabled */
+    text-shadow: none;
+}
+button:disabled:hover { /* Disable hover effects */
+    transform: none;
+    box-shadow: 0 5px 0 darken(var(--color-disabled), 15%);
+}
+
+/* Specific Button Colors */
+.nav-button { background-color: var(--color-button-orange); box-shadow: 0 5px 0 darken(var(--color-button-orange), 20%), 0 6px 8px var(--shadow-color); }
+.nav-button:hover { background-color: var(--color-button-orange-hover); transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 0 darken(var(--color-button-orange), 20%), 0 9px 12px var(--shadow-strong-color); }
+.nav-button:active { background-color: var(--color-button-orange-hover); transform: translateY(1px) scale(0.98); box-shadow: 0 2px 0 darken(var(--color-button-orange), 20%), 0 3px 5px var(--shadow-color);}
+
+.nav-button.next { background-color: var(--color-button-blue); box-shadow: 0 5px 0 darken(var(--color-button-blue), 20%), 0 6px 8px var(--shadow-color); }
+.nav-button.next:hover { background-color: var(--color-button-blue-hover); transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 0 darken(var(--color-button-blue), 20%), 0 9px 12px var(--shadow-strong-color); }
+.nav-button.next:active { background-color: var(--color-button-blue-hover); transform: translateY(1px) scale(0.98); box-shadow: 0 2px 0 darken(var(--color-button-blue), 20%), 0 3px 5px var(--shadow-color);}
+
+.nav-button.back { background-color: var(--color-button-red); box-shadow: 0 5px 0 darken(var(--color-button-red), 20%), 0 6px 8px var(--shadow-color); }
+.nav-button.back:hover { background-color: var(--color-button-red-hover); transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 0 darken(var(--color-button-red), 20%), 0 9px 12px var(--shadow-strong-color); }
+.nav-button.back:active { background-color: var(--color-button-red-hover); transform: translateY(1px) scale(0.98); box-shadow: 0 2px 0 darken(var(--color-button-red), 20%), 0 3px 5px var(--shadow-color);}
+
+#world-list, #level-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 25px; /* Increased gap */
+    margin-top: 25px;
+    margin-bottom: 25px;
+    width: 100%;
+    padding: 0 15px; /* More padding */
+}
+
+.world-button, .level-button {
+    min-width: 140px; /* Slightly wider */
+    min-height: 110px; /* Slightly taller */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 15px;
+    background-color: var(--color-secondary);
+    box-shadow: 0 5px 0 darken(var(--color-secondary), 20%), 0 6px 8px var(--shadow-color);
+    border-radius: 12px; /* More rounded */
+    color: var(--color-text-light); /* Ensure text is light */
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.4); /* Add text shadow */
+    line-height: 1.3; /* Improve text spacing */
+}
+.world-button:hover, .level-button:hover {
+    background-color: var(--color-button-blue-hover);
+    box-shadow: 0 8px 0 darken(var(--color-secondary), 20%), 0 9px 12px var(--shadow-strong-color);
+}
+.world-button:active, .level-button:active {
+    box-shadow: 0 2px 0 darken(var(--color-secondary), 20%), 0 3px 5px var(--shadow-color);
+}
+/* Add subtle background gradient to buttons */
+.world-button, .level-button, button {
+    background-image: linear-gradient(to bottom, rgba(255,255,255,0.15), rgba(0,0,0,0.15));
+}
+button:disabled {
+    background-image: none; /* Remove gradient on disabled */
+}
+
+.completion-status {
+    font-size: 0.7em;
+    margin-top: 8px; /* More space */
+    color: var(--color-text-light);
+    background-color: rgba(0,0,0,0.2); /* Darker badge background */
+    padding: 2px 5px;
+    border-radius: 4px;
+    display: inline-block;
+}
+.completion-status .star {
+    font-size: 1.6em; /* Make star slightly bigger */
+    color: var(--color-completion-star);
+    filter: drop-shadow(1px 1px 0px rgba(0,0,0,0.5));
+    vertical-align: middle; /* Align star better */
+    margin-left: 3px; /* Space before star */
+}
+
+.world-button.completed, .level-button.completed {
+     border: 3px solid var(--color-highlight);
+     background-color: var(--color-button-green);
+     box-shadow: 0 5px 0 darken(var(--color-button-green), 20%), 0 6px 8px var(--shadow-color);
+}
+.world-button.completed:hover, .level-button.completed:hover {
+    background-color: var(--color-button-green-hover);
+    box-shadow: 0 8px 0 darken(var(--color-button-green), 20%), 0 9px 12px var(--shadow-strong-color);
+}
+.world-button.completed:active, .level-button.completed:active {
+    box-shadow: 0 2px 0 darken(var(--color-button-green), 20%), 0 3px 5px var(--shadow-color);
+}
+
+.level-type-icon {
+    font-size: 2.5em; /* Make icons bigger */
+    margin-bottom: 10px;
+    filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.3));
+}
+
+/* Lobby Screen */
+#lobby-screen {
+    justify-content: center;
+    /* Add a subtle pattern or gradient */
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0)),
+                radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%);
+    background-color: var(--color-container-bg); /* Fallback */
+}
+
+.lobby-button {
+    padding: 18px 45px; /* Larger padding */
+    font-size: 1.3em; /* Larger font */
+    background-color: var(--color-button-green);
+    box-shadow: 0 6px 0 darken(var(--color-button-green), 20%), 0 8px 10px var(--shadow-strong-color);
+    letter-spacing: 1.5px;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+.lobby-button:hover {
+    background-color: var(--color-button-green-hover);
+    box-shadow: 0 9px 0 darken(var(--color-button-green), 20%), 0 10px 14px var(--shadow-strong-color);
+    transform: translateY(-4px) scale(1.03);
+    animation: none; /* Override on hover to use transform */
+}
+.lobby-button:active {
+     box-shadow: 0 3px 0 darken(var(--color-button-green), 20%), 0 4px 6px var(--shadow-color);
+     transform: translateY(1px) scale(0.97);
+}
+
+.lobby-background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    z-index: -1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0.1; /* Still subtle */
+}
+.plane-icon { /* Style the SVG placeholder if kept */
+    width: 55%;
+    height: 55%;
+    filter: drop-shadow(0 0 10px var(--color-secondary));
+    animation: flyUpDown 4s ease-in-out infinite, pulseGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes flyUpDown {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-25px) rotate(2deg); }
+}
+
+@keyframes pulseGlow {
+     from { filter: drop-shadow(0 0 10px var(--color-secondary)); }
+     to { filter: drop-shadow(0 0 20px var(--color-highlight)); }
+}
+
+/* Game Screen */
+#game-screen {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    background-color: #0a1128; /* Dark space blue background */
+}
+
+#game-canvas {
+    border: 3px solid var(--color-border); /* Thicker border */
+    background-color: var(--color-canvas-bg);
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    image-rendering: pixelated; /* Keep pixelated feel */
+    image-rendering: crisp-edges;
+    box-shadow: inset 0 0 15px rgba(0,0,0,0.4); /* Deeper inset shadow */
+    /* Add a subtle grid overlay */
+    background-image: linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+#game-ui {
+    position: absolute;
+    bottom: 10px; /* Closer to bottom */
+    left: 10px;
+    right: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 18px; /* More padding */
+    background-color: var(--color-ui-bg);
+    border-radius: 10px; /* More rounded */
+    color: var(--color-text-light);
+    font-size: 0.85em; /* Slightly larger UI font */
+    border: 2px solid var(--color-text-light); /* Light border */
+    box-shadow: 0 3px 8px var(--shadow-strong-color); /* Stronger shadow */
+}
+#game-ui button {
+    padding: 6px 12px; /* Adjust button padding */
+    font-size: 0.85em;
+    margin: 0;
+    box-shadow: 0 3px 0 darken(var(--color-button-red), 20%), 0 4px 5px var(--shadow-color); /* Adjust shadow */
+}
+#game-ui button:hover {
+    box-shadow: 0 5px 0 darken(var(--color-button-red), 20%), 0 6px 8px var(--shadow-strong-color);
+    transform: translateY(-2px) scale(1.01);
+}
+#game-ui button:active {
+     box-shadow: 0 1px 0 darken(var(--color-button-red), 20%), 0 2px 3px var(--shadow-color);
+     transform: translateY(1px) scale(0.99);
+}
+
+#player-info, #level-status {
+    font-weight: normal;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.7); /* Stronger shadow for readability */
+    letter-spacing: 0.5px;
+}
+.ui-icon {
+    display: inline-block;
+    margin-right: 6px;
+    font-size: 1.3em; /* Make heart slightly bigger */
+    vertical-align: middle;
+    color: #e74c3c; /* Red heart */
+    text-shadow: none; /* Remove shadow from icon itself */
+}
+
+/* World Complete / Game Over Screens */
+#world-complete-screen, #game-over-screen {
+    /* Add subtle celebratory/somber gradient */
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+    background-color: var(--color-container-bg); /* Fallback */
+}
+#world-complete-screen h2 { color: var(--color-button-green); }
+#game-over-screen h2 { color: var(--color-accent); }
+
+#world-complete-screen h2, #game-over-screen h2 {
+    font-size: 1.8em; /* Larger headings */
+    margin-bottom: 25px;
+    text-shadow: 3px 3px 0px rgba(0,0,0,0.1);
+}
+#world-complete-screen p, #game-over-screen p {
+    margin-bottom: 35px;
+    font-size: 1.1em; /* Larger text */
+    line-height: 1.5;
+}
+.world-complete-buttons {
+    display: flex;
+    gap: 20px; /* More gap */
+}
+.world-complete-message {
+    font-size: 1.2em !important; /* Even larger */
+    color: var(--color-primary);
+    font-weight: bold;
+}
+
+/* --- Animations --- */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes playerHitFlash {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; } /* More noticeable flash */
+}
+
+@keyframes bossHitFlash {
+  0%, 100% { filter: brightness(1); }
+  25%, 75% { filter: brightness(2) contrast(1.8) saturate(0); } /* White flash */
+  50% { filter: brightness(0.8); } /* Slightly dark */
+}
+
+.particle {
+    position: absolute; /* Needs JS to manage position */
+    border-radius: 50%;
+    background: white; /* Default particle color */
+    animation: fadeOut 0.5s forwards;
+    pointer-events: none; /* Prevent interaction */
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+}
+</style>
+
+<style>
+/* Loading screen styles */
+#loading-screen {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, rgba(10,17,40,0.98), rgba(16,24,40,1));
+    z-index: 60;
+    color: #fff;
+    flex-direction: column;
+    gap: 18px;
+}
+#loading-screen .loader {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    border: 8px solid rgba(255,255,255,0.08);
+    border-top-color: #f1c40f;
+    animation: spin 1s linear infinite;
+    box-shadow: 0 8px 30px rgba(241,196,15,0.12), inset 0 0 20px rgba(255,255,255,0.02);
+}
+#loading-screen .loading-text {
+    font-family: var(--font-primary);
+    letter-spacing: 1px;
+    font-size: 0.95em;
+    color: #f8f9fa;
+    opacity: 0.95;
+}
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+</style>
+</head>
+<body>
+    <div id="game-container">
+        <!-- Loading Screen -->
+        <div id="loading-screen" class="screen active" aria-hidden="false" role="status">
+            <div class="loader" aria-hidden="true"></div>
+            <div class="loading-text">Carregando... Por favor, aguarde</div>
+        </div>
+
+<div id="lobby-screen" class="screen">
+             <h1 class="game-title">Aero Aces</h1>
+             <p class="game-subtitle">Prepare-se para a batalha aérea!</p>
+             <div style="display:flex;gap:12px;align-items:center;justify-content:center;">
+                 <button id="start-game-button" class="lobby-button">Iniciar Jogo</button>
+                 <button id="help-multiplayer-button" class="lobby-button nav-button" style="background-color:#3498db;">Ajuda (Multiplayer)</button>
+             </div>
+             <div style="margin-top:12px;font-size:0.95em;color:rgba(255,255,255,0.95);display:flex;justify-content:center;gap:10px;align-items:center;">
+                 <div class="header-credit" style="background:transparent;padding:6px 12px;border-radius:8px;">byCalzSan <span class="neon-contact">contato 11951620762</span></div>
+             </div>
+             <div class="lobby-background">
+                 <!-- Placeholder for potential background elements -->
+                 <svg width="100" height="100" viewBox="0 0 100 100" class="plane-icon">
+                    <polygon points="50,5 95,95 50,75 5,95" fill="#ecf0f1"/>
+                 </svg>
+             </div>
+        </div>
+
+        <!-- Help / Multiplayer modal (hidden by default) -->
+        <div id="help-multiplayer-modal" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(10,17,40,0.95);color:#fff;padding:18px;border-radius:12px;z-index:50;display:none;max-width:90%;width:420px;box-shadow:0 8px 24px rgba(0,0,0,0.6);">
+            <h3 style="margin:0 0 8px 0;">Ajuda - Multiplayer</h3>
+            <p style="font-size:0.9em;line-height:1.3;margin:0 0 12px 0;">Pressione o botão abaixo para ativar o jogador 2 (multiplayer). Durante a partida, 'j' também alterna o jogador 2. P2 usa as setas para mover e a tecla 'ç' para atirar.</p>
+            <div style="display:flex;justify-content:flex-end;gap:8px;">
+                <button id="help-multiplayer-close" class="nav-button back" style="background-color:#e74c3c;">Fechar</button>
+                <button id="help-multiplayer-activate" class="nav-button next" style="background-color:#2ecc71;">Ativar Multiplayer</button>
+            </div>
+        </div>
+
+        <div id="world-select-screen" class="screen">
+             <header>
+                <div class="title-block">
+                    <h2>Seleção de Mundo</h2>
+                    <h3>Escolha onde quer aterrissar</h3>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <div id="progress-info">
+                        Mundo Atual: <span id="current-world">1</span> • Mundos Desbloqueados: <span id="unlocked-worlds">1</span>
+                    </div>
+                    <div class="header-credit">byCalzSan <span class="neon-contact">contato 11951620762</span></div>
+                </div>
+             </header>
+            <div id="world-list" style="padding:18px;">
+                <!-- World buttons will be generated here -->
+            </div>
+        </div>
+
+        <div id="level-select-screen" class="screen">
+             <header>
+                 <h2>Mundo <span id="selected-world-title"></span></h2>
+                 <h3>Seleção de Fase</h3>
+            </header>
+            <div id="level-list">
+                <!-- Level buttons will be generated here -->
+            </div>
+            <button id="back-to-world-select" class="nav-button">Voltar para Mundos</button>
+        </div>
+
+        <div id="game-screen" class="screen">
+            <canvas id="game-canvas"></canvas>
+            <div id="game-ui">
+                 <div id="player-info" style="display:flex;gap:12px;align-items:center;">
+                    <div><span class="ui-icon">❤️</span> P1 Vidas: <span id="player-lives">3</span></div>
+                    <div id="player2-info" style="display:none;"><span class="ui-icon">💚</span> P2 Vidas: <span id="player2-lives">3</span></div>
+                 </div>
+                 <div id="level-status">
+                    <!-- Wave/Boss info here -->
+                 </div>
+
+                 <!-- Power-Up Display (moved into bottom UI for easy access) -->
+                 <div id="power-up-display" class="power-up-ui" style="display:flex;gap:10px;align-items:center;">
+                     <button class="power-up-slot nav-button" data-type="multishot" id="power-multishot" title="Z / Multishot (pick up Z to grab)">
+                         Z <div class="power-up-timer" style="font-family:var(--font-primary);font-size:0.8em;margin-top:4px;">x0</div>
+                     </button>
+                     <button class="power-up-slot nav-button" data-type="homing" id="power-homing" title="X / Homing">
+                         X <div class="power-up-timer" style="font-family:var(--font-primary);font-size:0.8em;margin-top:4px;">x0</div>
+                     </button>
+                     <button class="power-up-slot nav-button" data-type="shield" id="power-shield" title="C / Shield">
+                         C <div class="power-up-timer" style="font-family:var(--font-primary);font-size:0.8em;margin-top:4px;">x0</div>
+                     </button>
+                 </div>
+
+                <button id="back-to-level-select" class="nav-button">Sair</button>
+            </div>
+        </div>
+
+         <div id="world-complete-screen" class="screen">
+            <h2>Mundo <span id="completed-world-number"></span> Completo!</h2>
+            <p class="world-complete-message">🎉 Parabéns! Você desbloqueou o próximo mundo. 🎉</p>
+            <div class="world-complete-buttons">
+                <button id="next-world-button" class="nav-button next">Próximo Mundo</button>
+                <button id="world-complete-back-to-worlds" class="nav-button back">Seleção de Mundo</button>
+            </div>
+        </div>
+
+        <div id="game-over-screen" class="screen">
+            <h2>Fim de Jogo!</h2>
+            <p>Você ficou sem vidas.</p>
+            <button id="game-over-back-button" class="nav-button back">Voltar para Fases</button>
+        </div>
+    </div>
+
+    <script type="importmap">
+    {
+        "imports": {
+        }
+    }
+    </script>
+    
+<script>
+ // --- Constants ---
+ const TOTAL_WORLDS = 12;
+ const LEVELS_PER_WORLD = 5;
+ const REGULAR_LEVELS_PER_WORLD = 2;
+ const BOSS_LEVELS_PER_WORLD = 3;
+ const PLAYER_STARTING_LIVES = 3;
+ const REGULAR_LEVEL_WAVES = 5;
+ const PLAYER_BULLET_SPEED = 7;
+ const ENEMY_BULLET_SPEED = 4;
+ const PLAYER_SLOW_DURATION = 2000; // 2 seconds
+ const PLAYER_INVULNERABILITY_DURATION = 1500; // 1.5 seconds
+ const PLAYER_FLASH_INTERVAL = 100; // ms for flashing when hit
+ const ENEMY_BULLET_LIFESPAN = 5000; // ms before enemy bullets despawn if they dont hit
+ const PLAYER_BULLET_LIFESPAN = 3000; // ms before player bullets despawn
+ const PARTICLE_LIFESPAN = 500; // ms for particle effects
+ const PARTICLE_COUNT = 15; // Number of particles per explosion
+
+ const shootSound = new Audio('/success.mp3');
+ shootSound.volume = 0.5; // sensible default volume for shot sound
+
+ // Background music for levels (looping during gameplay)
+ const bgMusic = new Audio('/suspense-422326.mp3');
+ bgMusic.loop = true;
+ bgMusic.volume = 0.35;
+ bgMusic.preload = 'auto';
+
+ // Lobby/menu music that should play infinitely until entering a match
+ const lobbyMusic = new Audio('/loopy-loop-2-37058.mp3');
+ lobbyMusic.loop = true;
+ lobbyMusic.volume = 0.45;
+ lobbyMusic.preload = 'auto';
+
+ // Player shot sound (dry fart)
+ const playerShootSound = new Audio('/dry-fart.mp3');
+ playerShootSound.volume = 0.6;
+ playerShootSound.preload = 'auto';
+
+ // Explosion sound played when enemies or bosses are defeated
+ const explosionSound = new Audio('/som-de-explosao_vP2r6kV.mp3');
+ explosionSound.volume = 0.6;
+ explosionSound.preload = 'auto';
+
+ // Fail / denied sound for power-up use when unavailable
+ const failSound = new Audio('/fail.mp3');
+ failSound.volume = 0.55;
+ failSound.preload = 'auto';
+
+ // Enemy / Boss shoot sound (gunshot)
+ const enemyShootSound = new Audio('/gunshot-352466.mp3');
+ enemyShootSound.volume = 0.55;
+ enemyShootSound.preload = 'auto';
+
+ // --- Power-up Constants ---
+ const POWERUP_MULTISHOT_DURATION = 5000; // 5s for 2x shot
+ const POWERUP_HOMING_DURATION = 3000; // 3s for homing bullets
+ const POWERUP_SHIELD_DURATION = 5000; // 5s shield
+ const POWERUP_MAX_USES_PER_WORLD = 3; // max of each per world
+ const POWERUP_PICKUP_RADIUS = 36; // how close Z must be to pickup
+
+ // --- DOM Elements ---
+ const screens = {
+     lobby: document.getElementById('lobby-screen'), // Added lobby
+     worldSelect: document.getElementById('world-select-screen'),
+     levelSelect: document.getElementById('level-select-screen'),
+     game: document.getElementById('game-screen'),
+     worldComplete: document.getElementById('world-complete-screen'),
+     gameOver: document.getElementById('game-over-screen'), // Added game over
+ };
+ const startGameButton = document.getElementById('start-game-button'); // Added
+ const worldListContainer = document.getElementById('world-list');
+ const levelListContainer = document.getElementById('level-list');
+ const currentWorldSpan = document.getElementById('current-world');
+ const unlockedWorldsSpan = document.getElementById('unlocked-worlds');
+ const selectedWorldTitleSpan = document.getElementById('selected-world-title');
+ const backToWorldSelectButton = document.getElementById('back-to-world-select');
+ const backToLevelSelectButton = document.getElementById('back-to-level-select');
+ const completedWorldNumberSpan = document.getElementById('completed-world-number');
+ const nextWorldButton = document.getElementById('next-world-button');
+ const worldCompleteBackToWorldsButton = document.getElementById('world-complete-back-to-worlds');
+ const gameOverBackButton = document.getElementById('game-over-back-button'); // Added
+ const gameCanvas = document.getElementById('game-canvas');
+ const ctx = gameCanvas.getContext('2d');
+ const playerLivesSpan = document.getElementById('player-lives');
+ const player2LivesSpan = document.getElementById('player2-lives');
+ const player2InfoDiv = document.getElementById('player2-info');
+ const levelStatusDiv = document.getElementById('level-status');
+
+ // Power-up UI slots
+ const powerUpSlots = {
+     speed: document.querySelector('.power-up-slot[data-type="speed"]'),
+     shield: document.querySelector('.power-up-slot[data-type="shield"]'),
+     multishot: document.querySelector('.power-up-slot[data-type="multishot"]'),
+ };
+
+ // --- Game State ---
+ let gameState = {
+     currentScreen: 'lobby', // Start at lobby
+     selectedWorld: 1,
+     unlockedWorlds: 1, // Start with world 1 unlocked
+     // per-world level completion arrays (World 12 uses 10 levels)
+    levelCompletion: Array(TOTAL_WORLDS).fill(0).map((_, idx) => {
+        const worldNumber = idx + 1;
+        const levels = (worldNumber === 12) ? 10 : LEVELS_PER_WORLD;
+        return Array(levels).fill(false);
+    }),
+     worldCompletion: Array(TOTAL_WORLDS).fill(false),
+     activeLevel: null, // { world: number, level: number, type: 'regular' | 'boss' }
+
+     // In-Game State (reset per level start)
+     playerLives: PLAYER_STARTING_LIVES,
+     player2Lives: 0, // will be set when player2 spawns or when a level starts (multiplayer)
+     isPlayerHit: false, // Flag for brief invulnerability/visual feedback
+     playerHitTimestamp: 0,
+     isPlayerSlowed: false,
+     playerSlowedTimestamp: 0,
+     currentWave: 0, // For regular levels
+     boss: null, // For boss levels { x, y, width, height, health, type, phase, ... }
+     enemies: [], // { x, y, width, height, health, type, speedX, speedY, movementPattern, lastActionTime, ... }
+     playerBullets: [], // { x, y, width, height, dx, dy, birthTime, homing }
+     enemyBullets: [], // { x, y, width, height, type, dx, dy, birthTime }
+     gameOver: false,
+     levelWon: false,
+     lastShotTime: 0, // Prevent spamming shots
+     shootCooldown: 250, // Milliseconds between shots (slightly increased)
+     score: 0, // Added score
+     particles: [], // { x, y, radius, color, dx, dy, life, maxLife }
+
+     // Power-ups
+     powerUpsOnField: [], // active pickups { x,y,width,height,type,spawnTime }
+     activePowerUps: {}, // active effects keyed by type with {expiresAt, data}
+     // Track how many times a power-up type has been used in the current world
+     powerUpUsesThisWorld: {}, // { multishot: n, homing: n, shield: n }
+ };
+
+// --- Game Variables ---
+// Player dimensions and colors
+const PLAYER_WIDTH = 40;
+const PLAYER_HEIGHT = 30;
+const PLAYER_COLOR = '#e74c3c'; // Alizarin Red
+const PLAYER_HIT_COLOR = '#f1c40f'; // Sun Flower Yellow (for flashing)
+const PLAYER_SLOW_COLOR = '#3498db'; // Peter River Blue
+
+let player = {
+    x: 50,
+    y: gameCanvas.height / 2 - PLAYER_HEIGHT / 2,
+    width: PLAYER_WIDTH,
+    height: PLAYER_HEIGHT,
+    speed: 4, // Slightly slower base speed
+    baseSpeed: 4,
+    lastMoveX: 1, // Default shoot direction: right
+    lastMoveY: 0,
+    _inMatch: true, // track whether player 1 is still active/visible in the match
+};
+let keysPressed = {};
+let gameLoopId = null;
+
+// --- Screen Management ---
+function showScreen(screenId) {
+    const previousScreen = gameState.currentScreen;
+    // Don't hide if it's the same screen
+    if (previousScreen !== screenId && screens[previousScreen]) {
+        screens[previousScreen].classList.remove('active');
+    }
+
+    // Show the new screen after a tiny delay to allow CSS transition
+    setTimeout(() => {
+        if (screens[screenId]) {
+            screens[screenId].classList.add('active');
+            gameState.currentScreen = screenId;
+            console.log("Showing screen:", screenId);
+
+            // Adjust canvas size when game screen is shown
+            if (screenId === 'game') {
+                resizeCanvas();
+                // Ensure player is positioned correctly after resize
+                player.y = gameCanvas.height / 2 - player.height / 2;
+                player.x = 50; // Reset X position too
+
+                // Stop menu music and start background music for gameplay (handle autoplay restrictions silently)
+                try {
+                    // Pause lobby/menu music
+                    if (!lobbyMusic.paused) {
+                        lobbyMusic.pause();
+                        lobbyMusic.currentTime = 0;
+                    }
+                } catch (e) { /* ignore */ }
+
+                try {
+                    bgMusic.currentTime = 0;
+                    const playPromise = bgMusic.play();
+                    if (playPromise && typeof playPromise.then === 'function') {
+                        playPromise.catch(() => {
+                            // Autoplay prevented; will play on first user interaction
+                            const resumeOnInteract = () => {
+                                bgMusic.play().catch(()=>{});
+                                window.removeEventListener('pointerdown', resumeOnInteract);
+                                window.removeEventListener('keydown', resumeOnInteract);
+                            };
+                            window.addEventListener('pointerdown', resumeOnInteract, { once: true });
+                            window.addEventListener('keydown', resumeOnInteract, { once: true });
+                        });
+                    }
+                } catch (e) {
+                    // ignore
+                }
+            } else {
+                // For non-game screens: pause game music and ensure lobby/menu music plays continuously
+                try {
+                    bgMusic.pause();
+                    bgMusic.currentTime = 0;
+                } catch (e) { /* ignore */ }
+
+                try {
+                    // Start lobby music (infinite loop) and handle autoplay restrictions
+                    lobbyMusic.currentTime = 0;
+                    const playPromise = lobbyMusic.play();
+                    if (playPromise && typeof playPromise.then === 'function') {
+                        playPromise.catch(() => {
+                            // Autoplay prevented; resume on first user interaction
+                            const resumeOnInteract = () => {
+                                lobbyMusic.play().catch(()=>{});
+                                window.removeEventListener('pointerdown', resumeOnInteract);
+                                window.removeEventListener('keydown', resumeOnInteract);
+                            };
+                            window.addEventListener('pointerdown', resumeOnInteract, { once: true });
+                            window.addEventListener('keydown', resumeOnInteract, { once: true });
+                        });
+                    }
+                } catch (e) {
+                    // ignore
+                }
+
+                stopGameLoop(); // Stop game loop if navigating away from game screen
+            }
+        } else {
+            console.error("Screen not found:", screenId);
+        }
+    }, 50); // Small delay matches CSS transition timing
+}
+
+function resizeCanvas() {
+    const container = screens.game; // Use the game screen div as reference
+    const containerWidth = container.clientWidth - 20; // Account for padding
+    const containerHeight = container.clientHeight - (document.getElementById('game-ui').offsetHeight + 25); // Account for UI and padding
+
+    // Target a 16:9 aspect ratio
+    const aspectRatio = 16 / 9;
+    let newWidth = containerWidth;
+    let newHeight = newWidth / aspectRatio;
+
+    if (newHeight > containerHeight) {
+        newHeight = containerHeight;
+        newWidth = newHeight * aspectRatio;
+    }
+
+    // Ensure dimensions are integers to avoid rendering issues
+    gameCanvas.width = Math.floor(newWidth);
+    gameCanvas.height = Math.floor(newHeight);
+
+    console.log(`Canvas resized to: ${gameCanvas.width}x${gameCanvas.height}`);
+
+    // It's generally better to reset/adjust game element positions
+    // after resize, especially those relative to canvas edges.
+    // Player Y position is reset in showScreen/startLevel.
+    // Enemies/Bosses might need adjustment if resize happens mid-game.
+}
+
+// --- UI Generation ---
+function generateWorldButtons() {
+    worldListContainer.innerHTML = ''; // Clear previous buttons
+    for (let i = 1; i <= TOTAL_WORLDS; i++) {
+        const button = document.createElement('button');
+        button.textContent = `Mundo ${i}`;
+        button.classList.add('world-button');
+        button.disabled = i > gameState.unlockedWorlds;
+
+        if (gameState.worldCompletion[i - 1]) {
+            button.classList.add('completed');
+            const status = document.createElement('span');
+            status.classList.add('completion-status');
+            status.textContent = '👑 Completo!'; // Crown icon
+            button.appendChild(status);
+        } else if (i === gameState.unlockedWorlds) {
+            const status = document.createElement('span');
+            status.classList.add('completion-status');
+            status.textContent = 'Novo!'; // Indicate the latest unlocked world
+            button.appendChild(status);
+        }
+
+        button.onclick = () => selectWorld(i);
+        worldListContainer.appendChild(button);
+    }
+    updateProgressInfo();
+}
+
+function generateLevelButtons(worldNumber) {
+    levelListContainer.innerHTML = ''; // Clear previous buttons
+    selectedWorldTitleSpan.textContent = worldNumber;
+    const worldIndex = worldNumber - 1;
+
+    // Support variable level counts per world (World 12 has 10 levels)
+    const totalLevelsForWorld = (worldNumber === 12) ? 10 : LEVELS_PER_WORLD;
+    for (let i = 0; i < totalLevelsForWorld; i++) {
+        const button = document.createElement('button');
+        button.classList.add('level-button');
+        const levelType = i < REGULAR_LEVELS_PER_WORLD ? 'regular' : 'boss';
+        const levelNumber = i + 1;
+
+        const icon = document.createElement('span');
+        icon.classList.add('level-type-icon');
+        // TODO: Add visual distinction for level types (e.g., skull for boss)
+        icon.textContent = levelType === 'boss' ? '💀' : '✈️'; // Example icons
+
+        const text = document.createElement('span');
+        text.textContent = `Fase ${levelNumber}`;
+
+        button.appendChild(icon);
+        button.appendChild(text);
+
+        if (gameState.levelCompletion[worldIndex]?.[i]) {
+            button.classList.add('completed');
+            const status = document.createElement('span');
+            status.classList.add('completion-status');
+            // Use a red star emoji for completed levels
+            status.innerHTML = '<span class="star">⭐</span>'; // Wrap in span for potential styling
+            button.appendChild(status);
+        }
+
+        button.onclick = () => startLevel(worldNumber, levelNumber, levelType);
+        levelListContainer.appendChild(button);
+    }
+}
+
+function updateProgressInfo() {
+    currentWorldSpan.textContent = gameState.selectedWorld;
+    unlockedWorldsSpan.textContent = gameState.unlockedWorlds;
+}
+
+// --- Navigation and State Changes ---
+function selectWorld(worldNumber) {
+    if (worldNumber > gameState.unlockedWorlds) return; // Should be disabled, but double-check
+    gameState.selectedWorld = worldNumber;
+    console.log(`Selected World: ${worldNumber}`);
+    generateLevelButtons(worldNumber);
+    showScreen('levelSelect');
+    updateProgressInfo();
+}
+
+function goBackToWorldSelect() {
+    showScreen('worldSelect');
+    localStorage.setItem('aeroAcesSave', JSON.stringify({
+        levelCompletion: gameState.levelCompletion,
+        unlockedWorlds: gameState.unlockedWorlds,
+        worldCompletion: gameState.worldCompletion
+    }));
+}
+
+function goBackToLevelSelect() {
+    stopGameLoop(); // Stop the game when leaving
+    gameState.activeLevel = null;
+    showScreen('levelSelect');
+    // Optional: Clear canvas
+    ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+}
+
+function completeLevel(world, level) {
+    const worldIndex = world - 1;
+    const levelIndex = level - 1;
+
+    // Validate indices using the per-world level count (World 12 uses 10)
+    const levelsForThisWorld = ((world >= 1 && world <= TOTAL_WORLDS) && (world === 12)) ? 10 : LEVELS_PER_WORLD;
+    if (worldIndex < 0 || worldIndex >= TOTAL_WORLDS || levelIndex < 0 || levelIndex >= levelsForThisWorld) {
+        console.error("Invalid world/level index for completion:", world, level);
+        return;
+    }
+
+    // Ensure the levelCompletion array for the world exists
+    if (!gameState.levelCompletion[worldIndex]) {
+        gameState.levelCompletion[worldIndex] = Array(LEVELS_PER_WORLD).fill(false);
+    }
+
+    gameState.levelCompletion[worldIndex][levelIndex] = true;
+    console.log(`Level Completed: World ${world}, Level ${level}`);
+
+    // Save progress
+    localStorage.setItem('aeroAcesSave', JSON.stringify({
+        levelCompletion: gameState.levelCompletion,
+        unlockedWorlds: gameState.unlockedWorlds,
+        worldCompletion: gameState.worldCompletion
+    }));
+
+    // Check if world is complete
+    const currentWorldLevels = gameState.levelCompletion[worldIndex];
+    if (currentWorldLevels.every(completed => completed === true)) {
+        completeWorld(world);
+    }
+}
+
+function completeWorld(worldNumber) {
+    if (gameState.worldCompletion[worldNumber - 1]) return; // Already completed
+
+    gameState.worldCompletion[worldNumber - 1] = true;
+    console.log(`World Completed: ${worldNumber}`);
+
+    // Unlock next world if applicable
+    if (worldNumber < TOTAL_WORLDS && gameState.unlockedWorlds === worldNumber) {
+        gameState.unlockedWorlds++;
+        console.log(`Unlocked World: ${gameState.unlockedWorlds}`);
+    }
+
+    // Show World Complete Screen
+    completedWorldNumberSpan.textContent = worldNumber;
+    nextWorldButton.style.display = (worldNumber < TOTAL_WORLDS) ? 'inline-block' : 'none'; // Hide if last world
+    showScreen('worldComplete');
+
+    // Refresh world select screen buttons in the background
+    generateWorldButtons();
+
+    // Save progress
+    localStorage.setItem('aeroAcesSave', JSON.stringify({
+        levelCompletion: gameState.levelCompletion,
+        unlockedWorlds: gameState.unlockedWorlds,
+        worldCompletion: gameState.worldCompletion
+    }));
+}
+
+function goToNextWorld() {
+    if (gameState.selectedWorld < gameState.unlockedWorlds) {
+        selectWorld(gameState.selectedWorld + 1); // Automatically select the newly unlocked world
+    } else {
+        goBackToWorldSelect(); // Go back to world select if it was the last world or something went wrong
+    }
+}
+
+// --- Game Loop and Logic ---
+function startLevel(world, level, type) {
+    console.log(`Starting Level: World ${world}, Level ${level} (${type})`);
+    gameState.activeLevel = { world, level, type };
+
+    // --- Reset Game State for the Level ---
+    gameState.playerLives = PLAYER_STARTING_LIVES;
+    gameState.isPlayerHit = false;
+    gameState.playerHitTimestamp = 0;
+    gameState.isPlayerSlowed = false;
+    gameState.playerSlowedTimestamp = 0;
+    gameState.currentWave = 0;
+    gameState.boss = null;
+    gameState.enemies = [];
+    gameState.playerBullets = [];
+    gameState.enemyBullets = [];
+    gameState.gameOver = false;
+    gameState.levelWon = false;
+    gameState.lastShotTime = 0;
+    player.speed = player.baseSpeed; // Reset speed
+
+    // --- Initialize Level Specifics ---
+    if (type === 'regular') {
+        gameState.currentWave = 1;
+        spawnWave(gameState.currentWave); // Spawn first wave
+        levelStatusDiv.textContent = `Onda: ${gameState.currentWave} / ${REGULAR_LEVEL_WAVES}`;
+    } else { // Boss level
+        spawnBoss(world, level);
+        levelStatusDiv.textContent = `Chefão - Vida: ${gameState.boss?.health || 'N/A'}`;
+    }
+
+    // reset both players' lives for the level (player2 only if active)
+    gameState.playerLives = PLAYER_STARTING_LIVES;
+    if (player2) {
+        gameState.player2Lives = PLAYER_STARTING_LIVES;
+        player2InfoDiv.style.display = 'inline-block';
+    } else {
+        gameState.player2Lives = 0;
+        player2InfoDiv.style.display = 'none';
+    }
+
+    playerLivesSpan.textContent = gameState.playerLives;
+    if (player2LivesSpan) player2LivesSpan.textContent = gameState.player2Lives;
+
+    showScreen('game');
+    player.x = 50;
+    player.y = gameCanvas.height / 2 - player.height / 2;
+    keysPressed = {}; // Clear keys
+    stopGameLoop(); // Ensure previous loop is stopped
+    startGameLoop();
+}
+
+function stopGameLoop() {
+    if (gameLoopId) {
+        cancelAnimationFrame(gameLoopId);
+        gameLoopId = null;
+        // console.log("Game loop stopped."); // Less verbose
+    }
+}
+
+function startGameLoop() {
+    if (!gameLoopId) {
+        console.log("Starting game loop...");
+        gameLoopId = requestAnimationFrame(gameLoop);
+    }
+}
+
+function gameLoop() {
+    const now = Date.now();
+    update(now); // Pass current time for time-based logic
+    draw();
+
+    if (gameState.gameOver || gameState.levelWon) {
+        stopGameLoop();
+        if (gameState.levelWon) {
+            console.log("Level Won!");
+            const { world, level } = gameState.activeLevel;
+            completeLevel(world, level);
+            // Automatically go back after a short delay? Or wait for user?
+            setTimeout(() => {
+                if (gameState.currentScreen === 'game') { // Ensure we are still on game screen
+                    goBackToLevelSelect();
+                }
+            }, 1500); // Go back after 1.5 seconds
+        } else {
+            console.log("Game Over!");
+            showScreen('gameOver'); // Show game over screen
+            stopGameLoop();
+            // No automatic redirect from game over screen anymore
+            // gameOverBackButton listener handles navigation
+        }
+    } else {
+        gameLoopId = requestAnimationFrame(gameLoop);
+    }
+}
+
+function update(now) {
+    if (gameState.gameOver || gameState.levelWon) return;
+
+    // --- Update Player Slow Effect ---
+    if (gameState.isPlayerSlowed) {
+        if (now - gameState.playerSlowedTimestamp > PLAYER_SLOW_DURATION) {
+            gameState.isPlayerSlowed = false;
+            player.speed = player.baseSpeed;
+            console.log("Player speed restored");
+        } else {
+            player.speed = player.baseSpeed / 2; // Halve the speed
+        }
+    }
+
+    // --- Update Player Invulnerability ---
+    if (gameState.isPlayerHit) {
+        if (now - gameState.playerHitTimestamp > PLAYER_INVULNERABILITY_DURATION) { // 1.5 seconds invulnerability
+            gameState.isPlayerHit = false;
+        }
+    }
+
+    // --- Player Movement & Direction Tracking (PLAYER 1 uses WASD only) ---
+    let dx = 0;
+    let dy = 0;
+    // Player 1: only WASD keys control movement (arrows reserved for Player 2)
+    if (keysPressed['w'] || keysPressed['W']) dy -= 1;
+    if (keysPressed['s'] || keysPressed['S']) dy += 1;
+    if (keysPressed['a'] || keysPressed['A']) dx -= 1;
+    if (keysPressed['d'] || keysPressed['D']) dx += 1;
+
+    // Normalize diagonal movement speed
+    const magnitude = Math.sqrt(dx * dx + dy * dy);
+    let moveX = 0;
+    let moveY = 0;
+
+    if (magnitude > 0) {
+        moveX = (dx / magnitude) * player.speed;
+        moveY = (dy / magnitude) * player.speed;
+        // Update last movement direction only if moving
+        player.lastMoveX = dx / magnitude;
+        player.lastMoveY = dy / magnitude;
+    } else {
+        // If not moving via keys, maintain last direction but don't move
+        moveX = 0;
+        moveY = 0;
+        // Keep lastMoveX/Y as is, so shooting direction is maintained when stopped
+    }
+
+    player.x += moveX;
+    player.y += moveY;
+
+    // Keep player within bounds
+    if (player.y < 0) player.y = 0;
+    if (player.y + player.height > gameCanvas.height) player.y = gameCanvas.height - player.height;
+    if (player.x < 0) player.x = 0;
+    if (player.x + player.width > gameCanvas.width) player.x = gameCanvas.width - player.width;
+
+    // --- Player2 Movement (arrow keys) ---
+    if (player2) {
+        let p2dx = 0;
+        let p2dy = 0;
+        if (player2KeysPressed['ArrowUp']) p2dy -= 1;
+        if (player2KeysPressed['ArrowDown']) p2dy += 1;
+        if (player2KeysPressed['ArrowLeft']) p2dx -= 1;
+        if (player2KeysPressed['ArrowRight']) p2dx += 1;
+
+        const mag2 = Math.sqrt(p2dx * p2dx + p2dy * p2dy);
+        if (mag2 > 0) {
+            const move2X = (p2dx / mag2) * player2.speed;
+            const move2Y = (p2dy / mag2) * player2.speed;
+            player2.x += move2X;
+            player2.y += move2Y;
+            player2.lastMoveX = p2dx / mag2;
+            player2.lastMoveY = p2dy / mag2;
+        }
+
+        // Clamp player2 inside canvas
+        if (player2.y < 0) player2.y = 0;
+        if (player2.y + player2.height > gameCanvas.height) player2.y = gameCanvas.height - player2.height;
+        if (player2.x < 0) player2.x = 0;
+        if (player2.x + player2.width > gameCanvas.width) player2.x = gameCanvas.width - player2.width;
+    }
+
+    // --- Player Shooting ---
+    // Shooting is now handled on single Space key presses in the keydown handler,
+    // so remove continuous-hold shooting from the update loop.
+ // --- Update Player Bullets ---
+     gameState.playerBullets = gameState.playerBullets.filter(bullet => {
+         // Homing bullets adjust direction toward nearest enemy
+         if (bullet.homing && gameState.enemies.length > 0) {
+             // find nearest enemy center
+             let nearest = null;
+             let nd = Infinity;
+             const bx = bullet.x;
+             const by = bullet.y;
+             for (let e of gameState.enemies) {
+                 const ex = e.x + e.width/2;
+                 const ey = e.y + e.height/2;
+                 const d = Math.hypot(ex - bx, ey - by);
+                 if (d < nd) { nd = d; nearest = {ex,ey}; }
+             }
+             if (nearest) {
+                 const angle = Math.atan2(nearest.ey - bullet.y, nearest.ex - bullet.x);
+                 const speed = Math.hypot(bullet.dx, bullet.dy) || (PLAYER_BULLET_SPEED * 1.5);
+                 bullet.dx = Math.cos(angle) * speed;
+                 bullet.dy = Math.sin(angle) * speed;
+             }
+         }
+
+         bullet.x += bullet.dx;
+         bullet.y += bullet.dy;
+         // Remove bullets leaving screen or expiring
+         const isOutOfBounds = bullet.x < -20 || bullet.x > gameCanvas.width + 20 || bullet.y < -20 || bullet.y > gameCanvas.height + 20;
+         const isExpired = now - bullet.birthTime > PLAYER_BULLET_LIFESPAN;
+         return !isOutOfBounds && !isExpired;
+     });
+
+    // --- Update Enemies ---
+    gameState.enemies.forEach(enemy => {
+        // Ensure persistent fields exist
+        if (enemy.targetX === undefined || enemy.targetY === undefined) {
+            enemy.targetX = gameCanvas.width - Math.random() * (gameCanvas.width / 2) - enemy.width;
+            enemy.targetY = Math.random() * (gameCanvas.height - enemy.height);
+            enemy.speed = (enemy.speedX || 1.5);
+            enemy.lastShotTime = enemy.lastShotTime || 0;
+            enemy.lastDodgeTime = enemy.lastDodgeTime || 0;
+            enemy.behaviorTick = enemy.behaviorTick || 0;
+        }
+
+        // --- Enhanced Dodge & Behavior Logic ---
+        // Larger detection radius and quicker reactions for "expert" CPU
+        const DODGE_RADIUS = 220; // increased: enemies detect incoming bullets earlier
+        const DODGE_COOLDOWN = 160; // reduced cooldown so enemies can react more often
+        const BEHAVIOR_INTERVAL = 120; // ms between decision updates per enemy
+
+        // Only evaluate AI decisions at a fixed interval per enemy to reduce jitter
+        if (now - (enemy.behaviorTick || 0) > BEHAVIOR_INTERVAL) {
+            enemy.behaviorTick = now;
+
+            // Predictive dodge: find the most threatening incoming player bullet and dodge perpendicular/away
+            let nearest = null;
+            let nearestDist = Infinity;
+            for (let b of gameState.playerBullets) {
+                const bx = b.x + b.width / 2;
+                const by = b.y + b.height / 2;
+                const ex = enemy.x + enemy.width / 2;
+                const ey = enemy.y + enemy.height / 2;
+                const d = Math.hypot(bx - ex, by - ey);
+                if (d < nearestDist) {
+                    nearestDist = d;
+                    nearest = { bx, by, b };
+                }
+            }
+
+            if (nearest && nearestDist <= DODGE_RADIUS && now - (enemy.lastDodgeTime || 0) > DODGE_COOLDOWN) {
+                // Compute bullet travel vector (approx)
+                const bvx = nearest.b.x !== undefined ? (nearest.b.dx || 0) : 0;
+                const bvy = nearest.b.y !== undefined ? (nearest.b.dy || 0) : 0;
+
+                // Compute vector from bullet to enemy
+                let relX = (enemy.x + enemy.width/2) - nearest.bx;
+                let relY = (enemy.y + enemy.height/2) - nearest.by;
+                const relMag = Math.hypot(relX, relY) || 1;
+
+                // Primary dodge direction away from bullet path (project and pick perpendicular)
+                // Perp vector
+                let perpX = -relY / relMag;
+                let perpY = relX / relMag;
+
+                // Choose side of perpendicular that increases distance from predicted bullet path
+                const testX1 = enemy.x + perpX * 1;
+                const testY1 = enemy.y + perpY * 1;
+                const d1 = Math.hypot((nearest.bx + bvx * 10) - (testX1 + enemy.width/2), (nearest.by + bvy * 10) - (testY1 + enemy.height/2));
+                const testX2 = enemy.x - perpX * 1;
+                const testY2 = enemy.y - perpY * 1;
+                const d2 = Math.hypot((nearest.bx + bvx * 10) - (testX2 + enemy.width/2), (nearest.by + bvy * 10) - (testY2 + enemy.height/2));
+
+                if (d1 > d2) { perpX = perpX; perpY = perpY; } else { perpX = -perpX; perpY = -perpY; }
+
+                // Dodge distance scaled by how close the bullet is
+                const closenessFactor = Math.max(0.6, 1 - (nearestDist / DODGE_RADIUS));
+                const dodgeDist = 80 + Math.random() * 120 * closenessFactor;
+
+                let newTargetX = enemy.x + perpX * dodgeDist;
+                let newTargetY = enemy.y + perpY * dodgeDist;
+
+                // As fallback, also move slightly away from bullet origin
+                newTargetX += (enemy.x - nearest.bx) * 0.12;
+                newTargetY += (enemy.y - nearest.by) * 0.12;
+
+                // Clamp inside canvas
+                newTargetX = Math.max(0, Math.min(gameCanvas.width - enemy.width, newTargetX));
+                newTargetY = Math.max(0, Math.min(gameCanvas.height - enemy.height, newTargetY));
+
+                enemy.targetX = newTargetX;
+                enemy.targetY = newTargetY;
+                enemy.lastDodgeTime = now;
+                enemy._dodgeBoostUntil = now + 260 + Math.random() * 180;
+            }
+
+            // --- Tactical positioning / flanking: prefer positions offset from player when not dodging ---
+            if (!enemy._dodgeBoostUntil || now > enemy._dodgeBoostUntil) {
+                // Biased target: circle around player at a preferred radius and angle
+                const px = player.x + player.width / 2;
+                const py = player.y + player.height / 2;
+                const preferredRadius = 140 + Math.random() * 120;
+                const angleOffset = (Math.PI / 6) * (Math.random() > 0.5 ? 1 : -1) + (Math.random() - 0.5) * 0.6;
+                const baseAngle = Math.atan2(enemy.y - py, enemy.x - px) + angleOffset;
+                const flankX = px + Math.cos(baseAngle) * preferredRadius - enemy.width/2;
+                const flankY = py + Math.sin(baseAngle) * preferredRadius - enemy.height/2;
+
+                // Blend between current target and flank to avoid abrupt changes
+                enemy.targetX = enemy.targetX * 0.65 + Math.max(0, Math.min(gameCanvas.width - enemy.width, flankX)) * 0.35;
+                enemy.targetY = enemy.targetY * 0.65 + Math.max(0, Math.min(gameCanvas.height - enemy.height, flankY)) * 0.35;
+            }
+
+            // --- Smart shooting decision: higher chance to shoot when aligned and not dodging ---
+            // We will attempt to lead the shot toward predicted player position
+            const timeSinceLastShot = now - (enemy.lastShotTime || 0);
+            const shootInterval = 900 + Math.random() * 600; // base interval (will be checked below)
+            if (timeSinceLastShot > shootInterval && (!enemy._dodgeBoostUntil || now > enemy._dodgeBoostUntil - 80)) {
+                // Predictive aim: simple linear lead using player's lastMove vector
+                const predictSteps = 12 + Math.floor(Math.random() * 8); // how far ahead to predict
+                const predictedPlayerX = player.x + (player.lastMoveX || 0) * player.speed * predictSteps;
+                const predictedPlayerY = player.y + (player.lastMoveY || 0) * player.speed * predictSteps;
+
+                // Slight randomness to make CPU feel natural but still skilled
+                const aimX = predictedPlayerX + (Math.random() - 0.5) * 8;
+                const aimY = predictedPlayerY + (Math.random() - 0.5) * 8;
+
+                // Fire with a higher chance to use an aimed/leading shot
+                spawnEnemyBullet(enemy.x + enemy.width * 0.1, enemy.y + enemy.height / 2, 'normal', now, true);
+                enemy.lastShotTime = now;
+
+                // After shooting, small nudge to strafing target to maintain pressure
+                enemy.targetX += (Math.random() - 0.5) * 40;
+                enemy.targetY += (Math.random() - 0.5) * 40;
+            }
+        } // end behavior tick
+
+        // Move toward target (with temporary dodge speed boost)
+        const currentSpeed = (enemy._dodgeBoostUntil && now < enemy._dodgeBoostUntil) ? enemy.speed * 1.9 : enemy.speed;
+        const angleToTarget = Math.atan2(enemy.targetY - enemy.y, enemy.targetX - enemy.x);
+        enemy.x += Math.cos(angleToTarget) * currentSpeed;
+        enemy.y += Math.sin(angleToTarget) * currentSpeed;
+
+        // If stuck near edges, bias back toward center-right area so enemies keep effective positioning
+        if (enemy.x < gameCanvas.width * 0.45) {
+            enemy.targetX = Math.max(enemy.targetX, gameCanvas.width * 0.55);
+        }
+
+        // Keep enemies strictly within bounds
+        if (enemy.x < 0) { enemy.x = 0; enemy.targetX = gameCanvas.width * 0.75; }
+        if (enemy.x + enemy.width > gameCanvas.width) { enemy.x = gameCanvas.width - enemy.width; enemy.targetX = gameCanvas.width * 0.25; }
+        if (enemy.y < 0) { enemy.y = 0; enemy.targetY = gameCanvas.height * 0.75; }
+        if (enemy.y + enemy.height > gameCanvas.height) { enemy.y = gameCanvas.height - enemy.height; enemy.targetY = gameCanvas.height * 0.25; }
+    });
+    // Enemies are only removed by collision checks now
+
+    // --- Update Enemy Bullets ---
+    gameState.enemyBullets = gameState.enemyBullets.filter(bullet => {
+        bullet.x += bullet.dx;
+        bullet.y += bullet.dy;
+        // Remove bullets leaving screen or expiring
+        const isOutOfBounds = bullet.x < -bullet.width || bullet.x > gameCanvas.width || bullet.y < -bullet.height || bullet.y > gameCanvas.height;
+        const isExpired = now - bullet.birthTime > ENEMY_BULLET_LIFESPAN;
+        return !isOutOfBounds && !isExpired;
+    });
+
+    // --- Update Boss ---
+    if (gameState.boss) {
+        updateBoss(now);
+        // Boss shooting logic is handled within updateBoss
+    }
+
+    // --- Update Particles ---
+    gameState.particles = gameState.particles.filter(p => {
+        p.x += p.dx;
+        p.y += p.dy;
+        p.life += 16; // ~60fps
+        p.dy += 0.05; // Gravity effect
+        return p.life < p.maxLife;
+    });
+
+     // --- Active power-ups housekeeping ---
+     updateActivePowerUps(now);
+
+     // --- Collision Detection ---
+     handleCollisions(now);
+
+    // --- Check Win/Loss Conditions ---
+    // Only trigger gameOver when both players are dead (if multiplayer), otherwise single player death ends match
+    const p1Dead = gameState.playerLives <= 0;
+    const p2Dead = (player2 ? gameState.player2Lives <= 0 : true);
+    if (!gameState.gameOver && p1Dead && p2Dead) {
+        gameState.gameOver = true;
+    }
+
+    // Regular Level Win Condition
+    if (gameState.activeLevel.type === 'regular' && gameState.currentWave > REGULAR_LEVEL_WAVES && gameState.enemies.length === 0) {
+        gameState.levelWon = true;
+    }
+
+    // Boss Level Win Condition
+    if (gameState.activeLevel.type === 'boss' && gameState.boss && gameState.boss.health <= 0) {
+        gameState.levelWon = true;
+    }
+
+    // --- Wave Management (Regular Levels) ---
+    if (gameState.activeLevel.type === 'regular' && gameState.enemies.length === 0 && gameState.currentWave <= REGULAR_LEVEL_WAVES && !gameState.levelWon) {
+        gameState.currentWave++;
+        if (gameState.currentWave <= REGULAR_LEVEL_WAVES) {
+            console.log("Spawning Wave:", gameState.currentWave);
+            spawnWave(gameState.currentWave);
+            levelStatusDiv.textContent = `Onda: ${gameState.currentWave} / ${REGULAR_LEVEL_WAVES}`;
+        } else {
+            levelStatusDiv.textContent = "Ondas Completas!";
+            // Win condition check above will handle this state
+        }
+    }
+}
+
+function draw() {
+    // Clear canvas
+    ctx.fillStyle = '#0a1128'; // Dark space blue background
+    ctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
+
+    // Draw player spaceship (player 1) — nose facing right
+    // Only render player1 if they are still in the match and have lives remaining
+    if (player._inMatch !== false && gameState.playerLives > 0 && !(gameState.isPlayerHit && Math.floor(Date.now() / PLAYER_FLASH_INTERVAL) % 2 === 0)) {
+        // Main ship body (nose on the right)
+        ctx.fillStyle = gameState.isPlayerSlowed ? '#3498db' : (gameState.isPlayerHit ? '#f1c40f' : '#e74c3c');
+        ctx.beginPath();
+        ctx.moveTo(player.x + player.width, player.y + player.height/2); // Nose (right)
+        ctx.lineTo(player.x + player.width*0.7, player.y + player.height*0.2); // Top wing forward
+        ctx.lineTo(player.x, player.y + player.height*0.3); // Top rear (left)
+        ctx.lineTo(player.x + player.width*0.3, player.y + player.height/2); // Middle
+        ctx.lineTo(player.x, player.y + player.height*0.7); // Bottom rear
+        ctx.lineTo(player.x + player.width*0.7, player.y + player.height*0.8); // Bottom wing forward
+        ctx.closePath();
+        ctx.fill();
+        
+        // Cockpit (shifted toward front-right)
+        ctx.fillStyle = '#ecf0f1';
+        ctx.beginPath();
+        ctx.arc(player.x + player.width*0.8, player.y + player.height/2, player.height/5, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Engine exhaust (on the left now)
+        ctx.fillStyle = '#f39c12';
+        ctx.beginPath();
+        ctx.moveTo(player.x, player.y + player.height*0.4);
+        ctx.lineTo(player.x - 6, player.y + player.height/2);
+        ctx.lineTo(player.x, player.y + player.height*0.6);
+        ctx.closePath();
+        ctx.fill();
+    }
+
+    // Draw player2 if present (ensure visible) — draw facing right (opposite of player1)
+    if (player2) {
+        // Apply same hit-flash logic as player1: blink while _isHit is true
+        const p2IsVisible = !(player2._isHit && Math.floor(Date.now() / PLAYER_FLASH_INTERVAL) % 2 === 0);
+        if (p2IsVisible) {
+            // Use green tint for player2 and draw nose to the right
+            ctx.fillStyle = '#2ecc71';
+            ctx.beginPath();
+            ctx.moveTo(player2.x + player2.width, player2.y + player2.height/2); // Nose (right)
+            ctx.lineTo(player2.x + player2.width*0.7, player2.y + player2.height*0.2);
+            ctx.lineTo(player2.x, player2.y + player2.height*0.3);
+            ctx.lineTo(player2.x + player2.width*0.3, player2.y + player2.height/2);
+            ctx.lineTo(player2.x, player2.y + player2.height*0.7);
+            ctx.lineTo(player2.x + player2.width*0.7, player2.y + player2.height*0.8);
+            ctx.closePath();
+            ctx.fill();
+
+            // cockpit
+            ctx.fillStyle = '#ecf0f1';
+            ctx.beginPath();
+            ctx.arc(player2.x + player2.width*0.8, player2.y + player2.height/2, player2.height/5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // engine exhaust (on the left side for player2)
+            ctx.fillStyle = '#f39c12';
+            ctx.beginPath();
+            ctx.moveTo(player2.x, player2.y + player2.height*0.4);
+            ctx.lineTo(player2.x - 5, player2.y + player2.height/2);
+            ctx.lineTo(player2.x, player2.y + player2.height*0.6);
+            ctx.closePath();
+            ctx.fill();
+        }
+    }
+
+    // Draw player bullets
+    gameState.playerBullets.forEach(bullet => {
+        // Laser-style bullets
+        ctx.fillStyle = '#00ffff';
+        ctx.beginPath();
+        ctx.moveTo(bullet.x, bullet.y);
+        ctx.lineTo(bullet.x + bullet.width, bullet.y);
+        ctx.lineTo(bullet.x + bullet.width, bullet.y + bullet.height);
+        ctx.lineTo(bullet.x, bullet.y + bullet.height);
+        ctx.closePath();
+        ctx.fill();
+        
+        // Add glow effect
+        ctx.fillStyle = 'rgba(0, 255, 255, 0.3)';
+        ctx.fillRect(bullet.x - 5, bullet.y - 2, bullet.width + 10, bullet.height + 4);
+    });
+
+    // Draw enemies with varied models and skins
+    gameState.enemies.forEach(enemy => {
+        const skin = enemy.skin || { body: '#9b59b6', accent: '#8e44ad', glow: '#d6b3ff' };
+        const model = enemy.model || 'arrow';
+        const ex = enemy.x;
+        const ey = enemy.y;
+        const ew = enemy.width;
+        const eh = enemy.height;
+
+        // Base shadow for depth
+        ctx.fillStyle = hexToRgba('#000000', 0.18);
+        ctx.beginPath();
+        ctx.ellipse(ex + ew/2 + 4, ey + eh/2 + 6, ew * 0.5, eh * 0.35, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Draw different models
+        if (model === 'arrow') {
+            ctx.fillStyle = skin.body;
+            ctx.beginPath();
+            ctx.moveTo(ex, ey + eh/2);
+            ctx.lineTo(ex + ew, ey);
+            ctx.lineTo(ex + ew*0.7, ey + eh/2);
+            ctx.lineTo(ex + ew, ey + eh);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.fillStyle = skin.accent;
+            ctx.beginPath();
+            ctx.arc(ex + ew*0.28, ey + eh/2, eh*0.18, 0, Math.PI*2);
+            ctx.fill();
+        } else if (model === 'round') {
+            // Circular fighter
+            ctx.fillStyle = skin.body;
+            ctx.beginPath();
+            ctx.ellipse(ex + ew/2, ey + eh/2, ew*0.5, eh*0.5, 0, 0, Math.PI*2);
+            ctx.fill();
+
+            ctx.fillStyle = skin.accent;
+            ctx.beginPath();
+            ctx.arc(ex + ew/2 + ew*0.12, ey + eh/2, eh*0.18, 0, Math.PI*2);
+            ctx.fill();
+        } else if (model === 'hex') {
+            // Hex-style chassis
+            ctx.fillStyle = skin.body;
+            ctx.beginPath();
+            const cx = ex + ew/2, cy = ey + eh/2;
+            for (let i = 0; i < 6; i++) {
+                const a = (i / 6) * Math.PI * 2;
+                const px = cx + Math.cos(a) * (ew*0.45);
+                const py = cy + Math.sin(a) * (eh*0.45);
+                if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+            }
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.fillStyle = skin.accent;
+            ctx.beginPath();
+            ctx.arc(cx, cy, eh*0.18, 0, Math.PI*2);
+            ctx.fill();
+        } else if (model === 'winged') {
+            // Winged fighter
+            ctx.fillStyle = skin.body;
+            ctx.beginPath();
+            ctx.moveTo(ex + ew*0.1, ey + eh*0.5);
+            ctx.lineTo(ex + ew*0.6, ey + eh*0.15);
+            ctx.lineTo(ex + ew*0.95, ey + eh*0.5);
+            ctx.lineTo(ex + ew*0.6, ey + eh*0.85);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.fillStyle = skin.accent;
+            ctx.fillRect(ex + ew*0.25, ey + eh*0.42, ew*0.18, eh*0.16);
+        } else {
+            // fallback simple body
+            ctx.fillStyle = skin.body;
+            ctx.fillRect(ex, ey, ew, eh);
+            ctx.fillStyle = skin.accent;
+            ctx.fillRect(ex + ew*0.1, ey + eh*0.25, ew*0.3, eh*0.5);
+        }
+
+        // Engine glow / exhaust
+        ctx.fillStyle = skin.glow;
+        ctx.beginPath();
+        ctx.ellipse(ex - 3, ey + eh*0.5, ew*0.12, eh*0.18, 0, 0, Math.PI*2);
+        ctx.fill();
+
+        // subtle highlight
+        ctx.fillStyle = hexToRgba('#ffffff', 0.75);
+        ctx.beginPath();
+        ctx.ellipse(ex + ew*0.3, ey + eh*0.35, Math.max(1, eh*0.07), Math.max(1, eh*0.05), -0.2, 0, Math.PI*2);
+        ctx.fill();
+    });
+
+    // Draw enemy bullets
+    gameState.enemyBullets.forEach(bullet => {
+        // Plasma-style enemy bullets
+        const gradient = ctx.createRadialGradient(
+            bullet.x + bullet.width/2, bullet.y + bullet.height/2, 0,
+            bullet.x + bullet.width/2, bullet.y + bullet.height/2, bullet.width
+        );
+        
+        if (bullet.type === 'slow') {
+            gradient.addColorStop(0, '#ffff00');
+            gradient.addColorStop(1, 'rgba(255, 255, 0, 0.1)');
+        } else {
+            gradient.addColorStop(0, '#ff00ff');
+            gradient.addColorStop(1, 'rgba(255, 0, 255, 0.1)');
+        }
+        
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(bullet.x + bullet.width/2, bullet.y + bullet.height/2, bullet.width, 0, Math.PI * 2);
+        ctx.fill();
+    });
+
+    // Draw boss
+    if (gameState.boss) {
+        drawBoss();
+    }
+
+    // Draw particles
+    gameState.particles.forEach(p => {
+        const alpha = 1 - (p.life / p.maxLife);
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+    });
+
+    // Draw Level Info (already updated in UI div)
+}
+
+ // --- Spawning Functions ---
+ function shootPlayerBullet(now) {
+     // Play shot sound (reset to start so rapid shots play)
+     try {
+         playerShootSound.currentTime = 0;
+         playerShootSound.play();
+     } catch (e) {
+         // ignore play errors (autoplay restrictions) silently
+     }
+
+     const multishotActive = !!gameState.activePowerUps.multishot;
+     const homingActive = !!gameState.activePowerUps.homing;
+
+     // base bullet
+     const createBullet = (ox, oy, homing=false) => {
+         gameState.playerBullets.push({
+             x: ox,
+             y: oy,
+             width: 15,
+             height: 5,
+             dx: PLAYER_BULLET_SPEED * 1.5,
+             dy: 0,
+             birthTime: now,
+             homing
+         });
+     };
+
+     // If multishot active, fire two bullets (slightly offset/up-down) and optionally homing
+     if (multishotActive) {
+         createBullet(player.x + player.width, player.y + player.height / 2 - 6, homingActive);
+         createBullet(player.x + player.width, player.y + player.height / 2 + 6, homingActive);
+     } else {
+         createBullet(player.x + player.width, player.y + player.height / 2 - 2, homingActive);
+     }
+
+     // Slightly reduce cooldown if multishot (feel more powerful) by halving shootCooldown while active
+     if (multishotActive) {
+         gameState.shootCooldown = 140;
+     } else {
+         gameState.shootCooldown = 250;
+     }
+ }
+
+// Difficulty: returns a multiplier based on the world (1.0 for world 1, grows by 10% per world)
+function getDifficultyMultiplier(world = gameState.selectedWorld) {
+    return 1 + Math.max(0, (world - 1)) * 0.10; // +10% per world
+}
+
+function spawnEnemy(x, y, type = 'basic') {
+    const mult = getDifficultyMultiplier();
+    const baseSpeed = 1.5 + Math.random() * 1;
+    const speed = baseSpeed * (1 + (mult - 1) * 0.6); // scale speed moderately
+    const baseHealth = 1;
+    const health = Math.max(1, Math.round(baseHealth * mult)); // at least 1
+
+    // Randomized skin palette and model type for visual variety per enemy
+    const palettes = [
+        { body: '#9b59b6', accent: '#8e44ad', glow: '#d6b3ff' },
+        { body: '#e74c3c', accent: '#c0392b', glow: '#ffb3b3' },
+        { body: '#16a085', accent: '#2ecc71', glow: '#a8ffd1' },
+        { body: '#f39c12', accent: '#d35400', glow: '#ffe8b3' },
+        { body: '#34495e', accent: '#3498db', glow: '#9be7ff' },
+        { body: '#2c3e50', accent: '#95a5a6', glow: '#cfcfcf' },
+    ];
+    const models = ['arrow', 'round', 'hex', 'winged']; // different drawing templates
+
+    const skin = palettes[Math.floor(Math.random() * palettes.length)];
+    const model = models[Math.floor(Math.random() * models.length)];
+
+    gameState.enemies.push({
+        x,
+        y,
+        width: 28 + Math.floor(Math.random() * 10), // vary size a bit
+        height: 20 + Math.floor(Math.random() * 12),
+        health: health,
+        type,
+        speedX: speed,
+        speed: speed,
+        targetX: null, // Initialize target later
+        targetY: null,
+        lastShotTime: 0,
+        skin,
+        model,
+    });
+}
+
+function spawnWave(waveNumber) {
+    // Spawn more enemies each wave and scale with world difficulty
+    const mult = getDifficultyMultiplier();
+    // enemyCount scales with wave and world difficulty (rounded)
+    const enemyCount = Math.max(1, Math.round((2 + waveNumber) * mult));
+    for (let i = 0; i < enemyCount; i++) {
+        // Spawn closer to the right edge initially
+        const x = gameCanvas.width - 50 - Math.random() * 100;
+        const y = Math.random() * (gameCanvas.height - 40) + 10; // Random Y pos within bounds
+        spawnEnemy(x, y);
+    }
+}
+
+function spawnBoss(world, level) {
+    const mult = getDifficultyMultiplier(world);
+    const bossType = level - REGULAR_LEVELS_PER_WORLD; // 1, 2, or 3 for this world
+    let bossConfig = {
+        x: gameCanvas.width - 150, // Start further left
+        y: gameCanvas.height / 2 - 40,
+        width: 80,
+        height: 80,
+        health: Math.round(50 * mult), // scale with world
+        maxHealth: Math.round(50 * mult),
+        type: `W${world}B${bossType}`,
+        lastActionTime: 0,
+        actionCooldown: Math.max(600, 1500 / mult), // faster actions on higher worlds
+        isVisible: true,
+        teleportTimer: 0,
+        cloneTimer: 0,
+        clones: [],
+        speed: 2 * (1 + (mult - 1) * 0.5), // increase boss movement moderately
+        targetX: gameCanvas.width * 0.75, // Initial target position
+        targetY: gameCanvas.height / 2,
+    };
+
+    // --- Randomized boss skin generator ---
+    // Each boss gets a skin object with colors and pattern chosen randomly per spawn.
+    function generateBossSkin() {
+        const colorPalettes = [
+            { body: '#8e44ad', accent: '#f39c12', glow: '#ffd166' }, // purple/gold
+            { body: '#16a085', accent: '#2ecc71', glow: '#a7f3d0' }, // teal/green
+            { body: '#e74c3c', accent: '#c0392b', glow: '#ff9a9e' }, // red
+            { body: '#34495e', accent: '#3498db', glow: '#9be7ff' }, // blue/gray
+            { body: '#f39c12', accent: '#d35400', glow: '#fff2cc' }, // orange
+            { body: '#27ae60', accent: '#2ecc71', glow: '#b9f6ca' }, // green
+        ];
+        const patterns = ['stripes', 'plates', 'hex', 'eyes', 'rings'];
+        const palette = colorPalettes[Math.floor(Math.random() * colorPalettes.length)];
+        const pattern = patterns[Math.floor(Math.random() * patterns.length)];
+        const variation = Math.random(); // subtle variation
+        return { palette, pattern, variation };
+    }
+
+    // Assign a fresh skin on spawn
+    bossConfig.skin = generateBossSkin();
+
+    // Customize based on boss type (scale specifics by multiplier)
+    switch (bossConfig.type) {
+        case 'W1B1': // Shoots slowing bullets
+            bossConfig.health = Math.round(60 * mult);
+            bossConfig.maxHealth = bossConfig.health;
+            bossConfig.actionCooldown = Math.max(500, 1200 / mult); // shoots more often on higher worlds
+            break;
+        case 'W1B2': // Teleports and shoots
+            bossConfig.health = Math.round(70 * mult);
+            bossConfig.maxHealth = bossConfig.health;
+            bossConfig.actionCooldown = Math.max(700, 2500 / mult);
+            break;
+        case 'W1B3': // Invisible shooting
+            bossConfig.health = Math.round(80 * mult);
+            bossConfig.maxHealth = bossConfig.health;
+            bossConfig.actionCooldown = Math.max(400, 1000 / mult);
+            bossConfig.speed = bossConfig.speed * 1.2; // Moves faster
+            break;
+        case 'W2B1': // Clones (Placeholder)
+            bossConfig.health = Math.round(90 * mult);
+            bossConfig.maxHealth = bossConfig.health;
+            bossConfig.actionCooldown = Math.max(800, 3000 / mult);
+            break;
+    }
+
+    // If this is World 12, force boss HP to 500 each as requested
+    if (world === 12) {
+        bossConfig.health = 500;
+        bossConfig.maxHealth = 500;
+    }
+
+    gameState.boss = bossConfig;
+    console.log("Spawning Boss:", gameState.boss.type, "multiplier:", mult, "skin:", gameState.boss.skin);
+}
+
+function updateBoss(now) {
+    const boss = gameState.boss;
+    if (!boss || boss.health <= 0) return;
+
+    // Ensure special timers exist
+    if (!boss.specialTimer) boss.specialTimer = now;
+    if (!boss._lastPredict) boss._lastPredict = { x: player.x, y: player.y, t: now };
+
+    // --- Boss Movement ---
+    // More fluid movement: blend toward target with small randomness
+    const angleToTarget = Math.atan2(boss.targetY - boss.y, boss.targetX - boss.x);
+    const distToTarget = Math.hypot(boss.targetX - boss.x, boss.targetY - boss.y);
+
+    const moveSpeed = boss.speed * (1 + Math.sin(now / 800) * 0.06); // small oscillation for natural motion
+    if (distToTarget > moveSpeed) {
+        boss.x += Math.cos(angleToTarget) * moveSpeed;
+        boss.y += Math.sin(angleToTarget) * moveSpeed;
+    } else {
+        // Pick a new target biased toward flanking positions relative to player
+        const px = player.x + player.width / 2;
+        const py = player.y + player.height / 2;
+        const biasX = gameCanvas.width * (0.6 + Math.random() * 0.3);
+        const biasY = Math.max(20, Math.min(gameCanvas.height - boss.height - 20, py + (Math.random() - 0.5) * 160));
+        boss.targetX = biasX;
+        boss.targetY = biasY;
+    }
+
+    // Keep boss within bounds
+    if (boss.x < gameCanvas.width / 2) boss.x = gameCanvas.width / 2;
+    if (boss.x + boss.width > gameCanvas.width) boss.x = gameCanvas.width - boss.width;
+    if (boss.y < 0) boss.y = 0;
+    if (boss.y + boss.height > gameCanvas.height) boss.y = gameCanvas.height - boss.height;
+
+    // --- Predictive aiming helper ---
+    // Estimate nearest player's movement velocity using last known position
+    // Choose the nearest alive player for boss targeting
+    let targetForPredict = player;
+    if (player2 && gameState.player2Lives > 0) {
+        const d1 = Math.hypot((player.x + player.width/2) - (boss.x + boss.width/2), (player.y + player.height/2) - (boss.y + boss.height/2));
+        const d2 = Math.hypot((player2.x + player2.width/2) - (boss.x + boss.width/2), (player2.y + player2.height/2) - (boss.y + boss.height/2));
+        targetForPredict = d2 < d1 ? player2 : player;
+    }
+    const dt = Math.max(1, now - boss._lastPredict.t);
+    const velX = (targetForPredict.x - boss._lastPredict.x) / dt * 16; // scaled to ~frames
+    const velY = (targetForPredict.y - boss._lastPredict.y) / dt * 16;
+    boss._lastPredict = { x: targetForPredict.x, y: targetForPredict.y, t: now };
+
+    // --- Special Attack: every 10s launch 3 consecutive volleys aimed and slightly predictive ---
+    const SPECIAL_INTERVAL = 10000; // 10s
+    if (!boss._inSpecial && now - boss.specialTimer >= SPECIAL_INTERVAL) {
+        boss._inSpecial = true;
+        boss.specialTimer = now;
+        const volleys = 3;
+        const volleyDelay = 260; // ms between volleys
+        const bulletsPerVolley = 7; // how many bullets in each volley (spread)
+        const spreadAngle = 0.6; // radians of total spread
+
+        for (let v = 0; v < volleys; v++) {
+            setTimeout(() => {
+                // compute predictive center angle toward predicted player position
+                const predictedX = player.x + velX * 12; // lead factor
+                const predictedY = player.y + velY * 12;
+                const sourceX = boss.x + boss.width * 0.1;
+                const sourceY = boss.y + boss.height * 0.5;
+
+                // central angle toward predicted position
+                const centerAngle = Math.atan2((predictedY) - sourceY, (predictedX) - sourceX);
+
+                // spawn bullets in a spread centered on centerAngle
+                for (let b = 0; b < bulletsPerVolley; b++) {
+                    const t = bulletsPerVolley === 1 ? 0.5 : b / (bulletsPerVolley - 1);
+                    const angle = centerAngle - spreadAngle / 2 + spreadAngle * t + (Math.random() - 0.5) * 0.02;
+                    const mult = getDifficultyMultiplier();
+                    const bulletSpeed = ENEMY_BULLET_SPEED * (1 + (mult - 1) * 0.6); // stronger bullets for higher worlds
+                    const dx = Math.cos(angle) * bulletSpeed;
+                    const dy = Math.sin(angle) * bulletSpeed;
+
+                    // play sound and push bullet
+                    try { enemyShootSound.currentTime = 0; enemyShootSound.play(); } catch (e) {}
+                    gameState.enemyBullets.push({
+                        x: sourceX,
+                        y: sourceY - 3,
+                        width: 8,
+                        height: 6,
+                        type: 'special',
+                        dx,
+                        dy,
+                        birthTime: Date.now()
+                    });
+                }
+                // minor screen shake/particle cue
+                createExplosion(sourceX, sourceY, '#ffcc66');
+                // After last volley, clear flag
+                if (v === volleys - 1) {
+                    setTimeout(() => { boss._inSpecial = false; }, 140);
+                }
+            }, v * volleyDelay);
+        }
+    }
+
+    // --- Boss Regular Actions (still happen, but reduced when special is active) ---
+    if (!boss._inSpecial && now - boss.lastActionTime > boss.actionCooldown) {
+        boss.lastActionTime = now;
+        // Slightly faster baseline cadence on higher worlds
+        boss.actionCooldown = Math.max(300, (700 + Math.random() * 700) / getDifficultyMultiplier());
+
+        // Adaptive behavior by type with smarter aiming (lead using velocity)
+        const sourceX = boss.x;
+        const sourceY = boss.y + boss.height / 2;
+        const predictFactor = 10 + Math.random() * 10;
+
+        // compute aimed angle with simple lead
+        const predictedX = player.x + velX * predictFactor;
+        const predictedY = player.y + velY * predictFactor;
+        const baseAngle = Math.atan2(predictedY - sourceY, predictedX - sourceX);
+
+        switch (boss.type) {
+            case 'W1B1': // Shoot a slowing aimed bullet
+                // single precise slow bullet
+                {
+                    const mult = getDifficultyMultiplier();
+                    const speed = ENEMY_BULLET_SPEED * (1 + (mult - 1) * 0.5);
+                    const dx = Math.cos(baseAngle) * speed;
+                    const dy = Math.sin(baseAngle) * speed;
+                    try { enemyShootSound.currentTime = 0; enemyShootSound.play(); } catch(e){}
+                    gameState.enemyBullets.push({ x: sourceX, y: sourceY - 3, width: 10, height: 8, type: 'slow', dx, dy, birthTime: now });
+                }
+                break;
+
+            case 'W1B2': // Teleport and shoot smaller bursts
+                boss.x = gameCanvas.width * 0.6 + Math.random() * (gameCanvas.width * 0.3);
+                boss.y = Math.random() * (gameCanvas.height - boss.height);
+                boss.targetX = boss.x;
+                boss.targetY = boss.y;
+                // small burst of 2-3 aimed shots
+                for (let i = 0; i < 3; i++) {
+                    const angle = baseAngle + (Math.random() - 0.5) * 0.12;
+                    const mult = getDifficultyMultiplier();
+                    const speed = ENEMY_BULLET_SPEED * (1 + (mult - 1) * 0.45);
+                    const dx = Math.cos(angle) * speed;
+                    const dy = Math.sin(angle) * speed;
+                    try { enemyShootSound.currentTime = 0; enemyShootSound.play(); } catch(e){}
+                    gameState.enemyBullets.push({ x: boss.x, y: boss.y + boss.height/2 - 3, width: 8, height: 6, type: 'normal', dx, dy, birthTime: now });
+                }
+                break;
+
+            case 'W1B3': // Toggle invis/visible and shoot more aggressively when visible
+                boss.isVisible = !boss.isVisible;
+                if (boss.isVisible) {
+                    // fire a focused triple aimed volley
+                    for (let i = -1; i <= 1; i++) {
+                        const angle = baseAngle + i * 0.06;
+                        const mult = getDifficultyMultiplier();
+                        const speed = ENEMY_BULLET_SPEED * (1 + (mult - 1) * 0.5);
+                        const dx = Math.cos(angle) * speed;
+                        const dy = Math.sin(angle) * speed;
+                        try { enemyShootSound.currentTime = 0; enemyShootSound.play(); } catch(e){}
+                        gameState.enemyBullets.push({ x: boss.x + boss.width*0.1, y: boss.y + boss.height/2 - 3, width: 8, height: 6, type: 'normal', dx, dy, birthTime: now });
+                    }
+                } else {
+                    // if invisible, occasionally fire a single quick shot
+                    const mult = getDifficultyMultiplier();
+                    const speed = ENEMY_BULLET_SPEED * (1 + (mult - 1) * 0.7);
+                    try { enemyShootSound.currentTime = 0; enemyShootSound.play(); } catch(e){}
+                    const dx = Math.cos(baseAngle) * speed;
+                    const dy = Math.sin(baseAngle) * speed;
+                    gameState.enemyBullets.push({ x: boss.x, y: boss.y + boss.height/2 - 3, width: 8, height: 6, type: 'normal', dx, dy, birthTime: now });
+                }
+                break;
+
+            case 'W2B1': // Clone-ish: shoot multiple angles
+                for (let k = 0; k < 4; k++) {
+                    const angle = baseAngle + (k - 1.5) * 0.18 + (Math.random()-0.5)*0.06;
+                    const mult = getDifficultyMultiplier();
+                    const speed = ENEMY_BULLET_SPEED * (1 + (mult - 1) * 0.45);
+                    const dx = Math.cos(angle) * speed;
+                    const dy = Math.sin(angle) * speed;
+                    try { enemyShootSound.currentTime = 0; enemyShootSound.play(); } catch(e){}
+                    gameState.enemyBullets.push({ x: boss.x, y: boss.y + boss.height/2 - 3, width: 8, height: 6, type: 'normal', dx, dy, birthTime: now });
+                }
+                break;
+
+            default:
+                // default behavior: one aimed shot with small spread
+                for (let i = -1; i <= 1; i++) {
+                    const angle = baseAngle + i * 0.04;
+                    const mult = getDifficultyMultiplier();
+                    const speed = ENEMY_BULLET_SPEED * (1 + (mult - 1) * 0.45);
+                    const dx = Math.cos(angle) * speed;
+                    const dy = Math.sin(angle) * speed;
+                    try { enemyShootSound.currentTime = 0; enemyShootSound.play(); } catch(e){}
+                    gameState.enemyBullets.push({ x: sourceX, y: sourceY - 3, width: 8, height: 6, type: 'normal', dx, dy, birthTime: now });
+                }
+                break;
+        }
+    }
+
+    // Update Boss Health Display
+    levelStatusDiv.textContent = `Chefão - Vida: ${Math.max(0, boss.health)}`; // Don't show negative health
+}
+
+function drawBoss() {
+    const boss = gameState.boss;
+    if (!boss) return;
+
+    if (!boss.isVisible) return; // Don't draw if invisible (for W1B3)
+
+    // Use boss.skin to determine visual style
+    const skin = boss.skin || { palette: { body: '#8e44ad', accent: '#f39c12', glow: '#ffd166' }, pattern: 'plates', variation: 0.5 };
+
+    const cx = boss.x + boss.width / 2;
+    const cy = boss.y + boss.height / 2;
+
+    // Draw ship base (main hull) - elongated front-facing ship
+    ctx.save();
+    // body shadow
+    ctx.fillStyle = '#00000033';
+    ctx.beginPath();
+    ctx.ellipse(cx + 4, cy + 6, boss.width * 0.55, boss.height * 0.45, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // main hull
+    ctx.fillStyle = skin.palette.body;
+    ctx.beginPath();
+    ctx.moveTo(boss.x + boss.width * 0.15, boss.y + boss.height * 0.5);
+    ctx.quadraticCurveTo(boss.x + boss.width * 0.25, boss.y + boss.height * 0.08, boss.x + boss.width * 0.6, boss.y + boss.height * 0.18);
+    ctx.lineTo(boss.x + boss.width * 0.95, boss.y + boss.height * 0.5);
+    ctx.lineTo(boss.x + boss.width * 0.6, boss.y + boss.height * 0.82);
+    ctx.quadraticCurveTo(boss.x + boss.width * 0.25, boss.y + boss.height * 0.92, boss.x + boss.width * 0.15, boss.y + boss.height * 0.5);
+    ctx.closePath();
+    ctx.fill();
+
+    // wings
+    ctx.fillStyle = shadeColor(skin.palette.body, -10);
+    ctx.beginPath();
+    ctx.moveTo(boss.x + boss.width * 0.30, boss.y + boss.height * 0.5);
+    ctx.lineTo(boss.x + boss.width * 0.05, boss.y + boss.height * 0.12);
+    ctx.lineTo(boss.x + boss.width * 0.25, boss.y + boss.height * 0.22);
+    ctx.lineTo(boss.x + boss.width * 0.40, boss.y + boss.height * 0.5);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(boss.x + boss.width * 0.30, boss.y + boss.height * 0.5);
+    ctx.lineTo(boss.x + boss.width * 0.05, boss.y + boss.height * 0.88);
+    ctx.lineTo(boss.x + boss.width * 0.25, boss.y + boss.height * 0.78);
+    ctx.lineTo(boss.x + boss.width * 0.40, boss.y + boss.height * 0.5);
+    ctx.closePath();
+    ctx.fill();
+
+    // cockpit
+    ctx.fillStyle = skin.palette.glow;
+    ctx.beginPath();
+    ctx.ellipse(boss.x + boss.width * 0.65, boss.y + boss.height * 0.5, boss.width * 0.14, boss.height * 0.12, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // canopy highlight
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    ctx.beginPath();
+    ctx.ellipse(boss.x + boss.width * 0.68, boss.y + boss.height * 0.48, boss.width * 0.06, boss.height * 0.04, -0.3, 0, Math.PI * 2);
+    ctx.fill();
+
+    // engines / thrusters
+    const thrusterCount = 2 + Math.floor(skin.variation * 2);
+    for (let i = 0; i < thrusterCount; i++) {
+        const tx = boss.x + boss.width * 0.18 - i * 6;
+        const ty = boss.y + boss.height * (0.35 + i * 0.15);
+        ctx.fillStyle = skin.palette.accent;
+        ctx.beginPath();
+        ctx.ellipse(tx, ty, boss.width * 0.06, boss.height * 0.08, 0, 0, Math.PI * 2);
+        ctx.fill();
+        // glow
+        ctx.fillStyle = hexToRgba(skin.palette.glow, 0.18 + 0.05 * i);
+        ctx.beginPath();
+        ctx.ellipse(tx - 6, ty, boss.width * 0.14, boss.height * 0.12, 0, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    // forward guns
+    ctx.strokeStyle = shadeColor(skin.palette.accent, -10);
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(boss.x + boss.width * 0.92, boss.y + boss.height * 0.42);
+    ctx.lineTo(boss.x + boss.width * 1.05, boss.y + boss.height * 0.42);
+    ctx.moveTo(boss.x + boss.width * 0.92, boss.y + boss.height * 0.58);
+    ctx.lineTo(boss.x + boss.width * 1.05, boss.y + boss.height * 0.58);
+    ctx.stroke();
+
+    // decorative accents depending on pattern
+    ctx.fillStyle = skin.palette.accent;
+    switch (skin.pattern) {
+        case 'stripes':
+            for (let i = 0; i < 3; i++) {
+                const sx = boss.x + boss.width * (0.38 + i * 0.08) + Math.sin(skin.variation * i * 10) * 3;
+                ctx.fillRect(sx, boss.y + boss.height * 0.28, boss.width * 0.03, boss.height * 0.44);
+            }
+            break;
+        case 'plates':
+            for (let i = 0; i < 2; i++) {
+                const plateW = boss.width * 0.28;
+                const px = boss.x + boss.width * (0.32 + i * 0.32);
+                const py = boss.y + boss.height * 0.36;
+                ctx.fillRect(px, py, plateW, boss.height * 0.18);
+            }
+            break;
+        case 'hex':
+            for (let i = 0; i < 4; i++) {
+                const hx = boss.x + boss.width * (0.42 + (i % 2) * 0.08);
+                const hy = boss.y + boss.height * (0.36 + Math.floor(i / 2) * 0.18);
+                ctx.beginPath();
+                ctx.arc(hx, hy, boss.width * 0.04 + skin.variation * 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            break;
+        case 'eyes':
+            for (let i = 0; i < 3; i++) {
+                const ex = boss.x + boss.width * (0.42 + i * 0.12);
+                const ey = boss.y + boss.height * (0.4 + Math.sin(i + skin.variation * 6) * 0.04);
+                ctx.beginPath();
+                ctx.fillStyle = skin.palette.glow;
+                ctx.arc(ex, ey, boss.width * 0.05 + skin.variation * 1.5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = skin.palette.accent;
+                ctx.beginPath();
+                ctx.arc(ex, ey, boss.width * 0.02, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            break;
+        case 'rings':
+            for (let i = 0; i < 2; i++) {
+                ctx.strokeStyle = skin.palette.glow;
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.arc(boss.x + boss.width * 0.5, boss.y + boss.height * (0.5 + i * 0.06), boss.width * (0.07 + i * 0.06), 0, Math.PI * 2);
+                ctx.stroke();
+            }
+            break;
+        default:
+            ctx.fillRect(boss.x + boss.width * 0.45, boss.y + boss.height * 0.38, boss.width * 0.12, boss.height * 0.24);
+            break;
+    }
+
+    // Draw subtle spikes (pontas) around the ship for aggressive look
+    const spikeCount = 8 + Math.floor(skin.variation * 6);
+    const spikeLength = 6 + Math.floor(skin.variation * 8);
+    ctx.fillStyle = skin.palette.accent;
+    ctx.strokeStyle = skin.palette.glow;
+    ctx.lineWidth = 0.8;
+    for (let i = 0; i < spikeCount; i++) {
+        const t = i / spikeCount;
+        const angle = t * Math.PI * 2 + Math.sin(i * 1.5 + skin.variation * 8) * 0.08;
+        const px = cx + Math.cos(angle) * (Math.max(boss.width, boss.height) / 2 + 4);
+        const py = cy + Math.sin(angle) * (Math.max(boss.width, boss.height) / 2 + 4);
+        const tx = cx + Math.cos(angle) * (Math.max(boss.width, boss.height) / 2 + 4 + spikeLength);
+        const ty = cy + Math.sin(angle) * (Math.max(boss.width, boss.height) / 2 + 4 + spikeLength);
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(tx, ty);
+        ctx.lineTo(px + Math.cos(angle + 0.12) * 6, py + Math.sin(angle + 0.12) * 6);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+    }
+
+    // subtle glow overlay
+    ctx.globalAlpha = 0.12 + skin.variation * 0.18;
+    ctx.fillStyle = skin.palette.glow;
+    ctx.fillRect(boss.x - 6, boss.y - 6, boss.width + 12, boss.height + 12);
+    ctx.globalAlpha = 1;
+
+    // Draw Health Bar
+    const healthBarWidth = boss.width;
+    const healthBarHeight = 8;
+    const healthBarX = boss.x;
+    const healthBarY = boss.y - healthBarHeight - 8; // Above the boss with a bit more spacing
+
+    ctx.fillStyle = '#222'; // Darker background for contrast
+    ctx.fillRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
+
+    const currentHealthWidth = Math.max(0, healthBarWidth * (boss.health / boss.maxHealth));
+    const g = ctx.createLinearGradient(healthBarX, 0, healthBarX + healthBarWidth, 0);
+    g.addColorStop(0, '#ff6b6b');
+    g.addColorStop(1, '#ffd166');
+    ctx.fillStyle = g;
+    ctx.fillRect(healthBarX, healthBarY, currentHealthWidth, healthBarHeight);
+
+    // small health bar border
+    ctx.strokeStyle = '#00000066';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
+
+    ctx.restore();
+}
+
+// Utility: slightly darken or brighten a hex color
+function shadeColor(hex, percent) {
+    try {
+        const f = hex.slice(1);
+        const t = percent < 0 ? 0 : 255;
+        const p = Math.abs(percent) / 100;
+        const R = parseInt(f.substring(0,2),16);
+        const G = parseInt(f.substring(2,4),16);
+        const B = parseInt(f.substring(4,6),16);
+        const newR = Math.round((t - R) * p) + R;
+        const newG = Math.round((t - G) * p) + G;
+        const newB = Math.round((t - B) * p) + B;
+        return `rgb(${newR}, ${newG}, ${newB})`;
+    } catch (e) {
+        return hex;
+    }
+}
+
+// Utility: convert hex to rgba string with an alpha
+function hexToRgba(hex, alpha=1) {
+    try {
+        const h = hex.replace('#','');
+        const bigint = parseInt(h, 16);
+        const r = (bigint >> 16) & 255;
+        const g = (bigint >> 8) & 255;
+        const b = bigint & 255;
+        return `rgba(${r},${g},${b},${alpha})`;
+    } catch (e) {
+        return `rgba(255,255,255,${alpha})`;
+    }
+}
+
+function spawnEnemyBullet(sourceX, sourceY, type = 'normal', now, aimed = false) {
+    // Helper: choose nearest active player (alive) between player and player2
+    function getNearestPlayer(targetX, targetY) {
+        const candidates = [];
+        if (gameState.playerLives > 0) candidates.push({ ref: player, lives: gameState.playerLives });
+        if (player2 && gameState.player2Lives > 0) candidates.push({ ref: player2, lives: gameState.player2Lives });
+        if (candidates.length === 0) return null;
+        let nearest = candidates[0].ref;
+        let nd = Math.hypot((nearest.x + nearest.width/2) - targetX, (nearest.y + nearest.height/2) - targetY);
+        for (let c of candidates) {
+            const cx = c.ref.x + c.ref.width/2;
+            const cy = c.ref.y + c.ref.height/2;
+            const d = Math.hypot(cx - targetX, cy - targetY);
+            if (d < nd) { nd = d; nearest = c.ref; }
+        }
+        return nearest;
+    }
+
+    let dx = 0, dy = 0;
+    const mult = getDifficultyMultiplier();
+    const bulletSpeed = ENEMY_BULLET_SPEED * (1 + (mult - 1) * 0.5); // bullets get faster up to 50% of multiplier
+
+    if (aimed) {
+        const target = getNearestPlayer(sourceX, sourceY);
+        if (target) {
+            const angle = Math.atan2((target.y + target.height / 2) - sourceY, (target.x + target.width / 2) - sourceX);
+            dx = Math.cos(angle) * bulletSpeed;
+            dy = Math.sin(angle) * bulletSpeed;
+        } else {
+            dx = -bulletSpeed; dy = 0;
+        }
+    } else { // Default: shoot straight left
+        dx = -bulletSpeed;
+        dy = 0;
+    }
+
+    // Play enemy/boss shoot sound (reset to start so rapid shots play)
+    try {
+        enemyShootSound.currentTime = 0;
+        enemyShootSound.play();
+    } catch (e) {
+        // ignore autoplay/play errors silently
+    }
+
+    gameState.enemyBullets.push({
+        x: sourceX, // Start from provided coords
+        y: sourceY - 3, // Center vertically
+        width: 8,
+        height: 6,
+        type: type, // 'normal' or 'slow'
+        dx: dx,
+        dy: dy,
+        birthTime: now
+    });
+}
+
+ function createExplosion(x, y, color = 'white') {
+     for (let i = 0; i < PARTICLE_COUNT; i++) {
+         const angle = Math.random() * Math.PI * 2;
+         const speed = 1 + Math.random() * 3;
+         gameState.particles.push({
+             x,
+             y,
+             radius: 2 + Math.random() * 4,
+             color,
+             dx: Math.cos(angle) * speed,
+             dy: Math.sin(angle) * speed,
+             life: 0,
+             maxLife: 500 + Math.random() * 500 // Random lifespan
+         });
+     }
+ }
+
+ // --- Power-up Helpers ---
+ function spawnPowerUpPickup(x, y) {
+     const types = ['multishot', 'homing', 'shield'];
+     const type = types[Math.floor(Math.random() * types.length)];
+     gameState.powerUpsOnField.push({
+         x: x - 12,
+         y: y - 12,
+         width: 24,
+         height: 24,
+         type,
+         spawnTime: Date.now()
+     });
+ }
+
+ function updatePowerUpUI() {
+     // Update each slot text/icon with remaining uses in current world
+     const world = gameState.selectedWorld;
+     const uses = gameState.powerUpUsesThisWorld[world] || { multishot:0, homing:0, shield:0 };
+     if (powerUpSlots.multishot) powerUpSlots.multishot.querySelector('.power-up-timer').textContent = `x${Math.min(POWERUP_MAX_USES_PER_WORLD - (uses.multishot||0), POWERUP_MAX_USES_PER_WORLD)}`;
+     if (powerUpSlots.shield) powerUpSlots.shield.querySelector('.power-up-timer').textContent = `x${Math.min(POWERUP_MAX_USES_PER_WORLD - (uses.shield||0), POWERUP_MAX_USES_PER_WORLD)}`;
+     if (powerUpSlots.speed) powerUpSlots.speed.querySelector('.power-up-timer').textContent = `x${Math.min(POWERUP_MAX_USES_PER_WORLD - (uses.multishot||0), POWERUP_MAX_USES_PER_WORLD)}`; // speed slot used for multishot icon in markup
+ }
+
+ // Attempt to pick up a nearby power-up when player presses Z
+ function handlePickupOnZ() {
+     // find nearest pickup inside pickup radius
+     let nearestIndex = -1;
+     let nearestDist = Infinity;
+     const px = player.x + player.width/2;
+     const py = player.y + player.height/2;
+     for (let i = 0; i < gameState.powerUpsOnField.length; i++) {
+         const pu = gameState.powerUpsOnField[i];
+         const cx = pu.x + pu.width/2;
+         const cy = pu.y + pu.height/2;
+         const d = Math.hypot(px - cx, py - cy);
+         if (d < nearestDist) {
+             nearestDist = d;
+             nearestIndex = i;
+         }
+     }
+     if (nearestIndex >= 0 && nearestDist <= POWERUP_PICKUP_RADIUS) {
+         const picked = gameState.powerUpsOnField.splice(nearestIndex,1)[0];
+         // Auto-activate pickup: pressing Z picks up and automatically activates if uses allow
+         activatePowerUp(picked.type);
+     }
+ }
+
+ function getUsesForCurrentWorld() {
+     const world = gameState.selectedWorld;
+     if (!gameState.powerUpUsesThisWorld[world]) {
+         gameState.powerUpUsesThisWorld[world] = { multishot:0, homing:0, shield:0 };
+     }
+     return gameState.powerUpUsesThisWorld[world];
+ }
+
+ function canUsePowerUp(type) {
+     const uses = getUsesForCurrentWorld();
+     return (uses[type] || 0) < POWERUP_MAX_USES_PER_WORLD;
+ }
+
+ function consumePowerUpUse(type) {
+     const uses = getUsesForCurrentWorld();
+     uses[type] = (uses[type] || 0) + 1;
+     updatePowerUpUI();
+ }
+
+ function activatePowerUp(type) {
+     const now = Date.now();
+     // Prevent power-up activation while multiplayer (player2) is active
+     if (gameState.powerUpsDisabled) {
+         try { failSound && failSound.play(); } catch(e) {}
+         console.log("Attempted to activate power-up while multiplayer is active; action blocked.");
+         return;
+     }
+     if (!canUsePowerUp(type)) {
+         // play failure sound
+         try { failSound && failSound.play(); } catch(e) {}
+         return;
+     }
+     consumePowerUpUse(type);
+     switch (type) {
+         case 'multishot':
+             gameState.activePowerUps.multishot = { expiresAt: now + POWERUP_MULTISHOT_DURATION };
+             // reduce cooldown for duration (2x firing effect by doubling rate)
+             break;
+         case 'homing':
+             gameState.activePowerUps.homing = { expiresAt: now + POWERUP_HOMING_DURATION };
+             break;
+         case 'shield':
+             gameState.activePowerUps.shield = { expiresAt: now + POWERUP_SHIELD_DURATION };
+             break;
+     }
+     // Play confirm sound
+     try { shootSound && shootSound.play(); } catch(e) {}
+ }
+
+ // Clean up expired power-ups
+ function updateActivePowerUps(now) {
+     ['multishot','homing','shield'].forEach(k => {
+         if (gameState.activePowerUps[k] && now > gameState.activePowerUps[k].expiresAt) {
+             delete gameState.activePowerUps[k];
+         }
+     });
+ }
+
+// --- Collision Detection ---
+function checkCollision(rect1, rect2) {
+    return rect1.x < rect2.x + rect2.width &&
+        rect1.x + rect1.width > rect2.x &&
+        rect1.y < rect2.y + rect2.height &&
+        rect1.y + rect1.height > rect2.y;
+}
+
+function handleCollisions(now) {
+    // Player Bullets vs Enemies
+    for (let i = gameState.playerBullets.length - 1; i >= 0; i--) {
+        const bullet = gameState.playerBullets[i];
+        let bulletRemoved = false; // Flag to prevent double removal if bullet hits multiple enemies in one frame (unlikely but possible)
+        for (let j = gameState.enemies.length - 1; j >= 0; j--) {
+            const enemy = gameState.enemies[j];
+            if (checkCollision(bullet, enemy)) {
+                if (!bulletRemoved) {
+                    gameState.playerBullets.splice(i, 1);
+                    bulletRemoved = true;
+                }
+                enemy.health -= 1;
+                 if (enemy.health <= 0) {
+                     gameState.enemies.splice(j, 1);
+                     try { explosionSound.currentTime = 0; explosionSound.play(); } catch(e) {}
+                     createExplosion(enemy.x + enemy.width/2, enemy.y + enemy.height/2, 'yellow');
+                     // Chance to spawn a power-up pickup at enemy's position
+                     if (Math.random() < 0.28) { // ~28% chance
+                         spawnPowerUpPickup(enemy.x + enemy.width/2, enemy.y + enemy.height/2);
+                     }
+                 }
+                 break; // Bullet hit an enemy, move to next bullet
+             }
+         }
+     }
+
+    // Player Bullets vs Boss
+    if (gameState.boss && gameState.boss.isVisible && gameState.boss.health > 0) {
+        for (let i = gameState.playerBullets.length - 1; i >= 0; i--) {
+            const bullet = gameState.playerBullets[i];
+            if (checkCollision(bullet, gameState.boss)) {
+                gameState.playerBullets.splice(i, 1);
+                gameState.boss.health -= 1;
+                // Add visual feedback for boss hit? (e.g., flash)
+                gameState.boss.isHit = true; // Add a temporary hit flag for drawing
+                setTimeout(() => { if(gameState.boss) gameState.boss.isHit = false; }, 100);
+                if (gameState.boss.health <= 0) {
+                    try { explosionSound.currentTime = 0; explosionSound.play(); } catch(e) {}
+                    createExplosion(gameState.boss.x + gameState.boss.width/2, 
+                                gameState.boss.y + gameState.boss.height/2,
+                                'red');
+                }
+                break; // Move to next bullet
+            }
+        }
+    }
+
+     // --- Enemy Bullets vs Players (check both P1 and P2) ---
+    for (let i = gameState.enemyBullets.length - 1; i >= 0; i--) {
+        const bullet = gameState.enemyBullets[i];
+        // Check collision with player 1 if alive and not invulnerable
+        if (gameState.playerLives > 0 && !gameState.isPlayerHit && checkCollision(bullet, player)) {
+            // If shield power-up active for P1, ignore bullet collision
+            if (gameState.activePowerUps.shield) {
+                gameState.enemyBullets.splice(i, 1);
+                createExplosion(player.x + player.width/2, player.y + player.height/2, 'cyan');
+                continue;
+            }
+            gameState.enemyBullets.splice(i, 1);
+            handlePlayerHit('player', bullet.type, now);
+            continue;
+        }
+
+        // Check collision with player 2 if exists and alive and not invulnerable
+        if (player2 && gameState.player2Lives > 0 && !player2._isHit && checkCollision(bullet, player2)) {
+            // For now, use same shield behavior for P1 (global shield) - if shield active, ignore
+            if (gameState.activePowerUps.shield) {
+                gameState.enemyBullets.splice(i, 1);
+                createExplosion(player2.x + player2.width/2, player2.y + player2.height/2, 'cyan');
+                continue;
+            }
+            gameState.enemyBullets.splice(i, 1);
+            handlePlayerHit('player2', bullet.type, now);
+            continue;
+        }
+    }
+
+    // Player vs Enemies
+    if (!gameState.isPlayerHit && gameState.playerLives > 0) {
+        for (let j = gameState.enemies.length - 1; j >= 0; j--) {
+            const enemy = gameState.enemies[j];
+            if (checkCollision(player, enemy)) {
+                // Remove enemy on collision
+                gameState.enemies.splice(j, 1);
+                handlePlayerHit('collision', now);
+                // TODO: Maybe damage enemy too?
+                break; // Player hit, no need to check other enemies
+            }
+        }
+    }
+
+    // Player vs Boss
+    if (gameState.boss && gameState.boss.isVisible && !gameState.isPlayerHit && gameState.playerLives > 0 && checkCollision(player, gameState.boss)) {
+        handlePlayerHit('collision', now);
+    }
+}
+
+function handlePlayerHit(target, damageType, now) {
+    // target: 'player' or 'player2'
+    if (target === 'player') {
+        if (gameState.isPlayerHit) return; // Already hit recently
+        gameState.playerLives--;
+        playerLivesSpan.textContent = gameState.playerLives;
+        gameState.isPlayerHit = true;
+        gameState.playerHitTimestamp = now;
+    } else if (target === 'player2' && player2) {
+        if (player2._isHit) return;
+        gameState.player2Lives--;
+        if (player2LivesSpan) player2LivesSpan.textContent = gameState.player2Lives;
+        player2._isHit = true;
+        player2._hitTimestamp = now;
+    }
+
+    console.log(`Hit: ${target} Lives => P1:${gameState.playerLives} P2:${gameState.player2Lives} Type:${damageType}`);
+
+    if (damageType === 'slow' && target === 'player') {
+        gameState.isPlayerSlowed = true;
+        gameState.playerSlowedTimestamp = now;
+        console.log("Player slowed!");
+    }
+
+    // small particle/explosion feedback at the impacted ship
+    try {
+        if (target === 'player') createExplosion(player.x + player.width/2, player.y + player.height/2, 'orange');
+        if (target === 'player2' && player2) createExplosion(player2.x + player2.width/2, player2.y + player2.height/2, 'lime');
+    } catch(e){}
+
+    // Clear hit flags after invulnerability window for each player
+    if (target === 'player') {
+        setTimeout(() => { gameState.isPlayerHit = false; }, PLAYER_INVULNERABILITY_DURATION);
+    } else if (target === 'player2') {
+        setTimeout(() => { if (player2) player2._isHit = false; }, PLAYER_INVULNERABILITY_DURATION);
+    }
+
+    // Determine game over: only when both players are dead (if player2 exists). If only one player exists, original single-player rule applies.
+    const p1Dead = gameState.playerLives <= 0;
+    const p2Dead = (player2 ? gameState.player2Lives <= 0 : true); // if no player2, consider them "dead" for end check
+    if (p1Dead && p2Dead) {
+        gameState.gameOver = true;
+    } else {
+        // if one player died, keep playing for the surviving player
+        // remove the dead player's presence from the match (visually and from UI)
+        if (p1Dead) {
+            // mark player out of the match and hide visually
+            player._inMatch = false;
+            player.x = -9999;
+            player.y = -9999;
+            // update UI to reflect player 1 is out
+            playerLivesSpan.textContent = gameState.playerLives;
+            // optional: visually dim the P1 info
+            playerLivesSpan.parentElement.style.opacity = 0.45;
+        }
+        if (player2 && p2Dead) {
+            // remove player2 object from the match entirely
+            player2 = null;
+            gameState.player2Lives = 0;
+            if (player2LivesSpan) player2LivesSpan.textContent = '0';
+            if (player2InfoDiv) player2InfoDiv.style.display = 'none';
+            // Disable respawn via 'j' until next level start / phase change
+            gameState.player2Disabled = true;
+            console.log("Player2 died — re-spawn via 'j' disabled until level restart.");
+        }
+    }
+}
+
+ // --- Event Listeners ---
+ 
+ // --- Multiplayer secondary player (spawn with 'j') ---
+ // Define player2 state
+ let player2 = null; // will be { x,y,width,height,speed,baseSpeed, lastMoveX,lastMoveY }
+ let player2KeysPressed = {}; // track arrow keys for player2
+ let player2LastShotTime = 0;
+ const PLAYER2_SHOOT_COOLDOWN = 300; // ms between player2 shots
+ 
+ // Helper: spawn or remove player2
+ function togglePlayer2() {
+     // If disabled due to player2 death earlier in the same level, prevent respawn until next level
+     if (gameState.player2Disabled) {
+         console.log("Player2 respawn is disabled until the level is restarted or changed.");
+         try { failSound && failSound.play(); } catch(e) {}
+         return;
+     }
+
+     if (!player2) {
+         // Spawn second ship to the right side near center and give it lives
+         player2 = {
+             x: 80,
+             y: gameCanvas.height / 2 - PLAYER_HEIGHT / 2 + 40,
+             width: PLAYER_WIDTH,
+             height: PLAYER_HEIGHT,
+             speed: 3.5,
+             baseSpeed: 3.5,
+             lastMoveX: -1, // default face left (toward enemies)
+             lastMoveY: 0,
+             _isHit: false,
+             _hitTimestamp: 0,
+         };
+         // initialize player2 lives
+         gameState.player2Lives = PLAYER_STARTING_LIVES;
+         if (player2LivesSpan) player2LivesSpan.textContent = gameState.player2Lives;
+         if (player2InfoDiv) player2InfoDiv.style.display = 'inline-block';
+         console.log("Player2 spawned");
+
+         // Mark multiplayer active and disable power-ups while multiplayer is active
+         gameState.multiplayerActive = true;
+         gameState.powerUpsDisabled = true;
+         // disable power-up UI buttons
+         document.querySelectorAll('.power-up-slot').forEach(btn => { try { btn.disabled = true; } catch(e){} });
+         console.log("Power-ups disabled due to multiplayer activation.");
+     } else {
+         // remove player2 but do not immediately end match unless both dead
+         player2 = null;
+         gameState.player2Lives = 0;
+         if (player2InfoDiv) player2InfoDiv.style.display = 'none';
+         if (player2LivesSpan) player2LivesSpan.textContent = '0';
+         console.log("Player2 removed");
+
+         // Re-enable power-ups when multiplayer is turned off
+         gameState.multiplayerActive = false;
+         gameState.powerUpsDisabled = false;
+         document.querySelectorAll('.power-up-slot').forEach(btn => { try { btn.disabled = false; } catch(e){} });
+         console.log("Power-ups re-enabled after multiplayer deactivation.");
+     }
+ }
+ 
+ // Player2 shooting function (key 'ç' triggers). We'll map both 'ç' and the keyCode 231 fallback.
+ function shootPlayer2Bullet(now) {
+     if (!player2) return;
+     try { playerShootSound.currentTime = 0; playerShootSound.play(); } catch(e) {}
+     // create a bullet moving right like player1 but from player2
+     gameState.playerBullets.push({
+         x: player2.x + player2.width,
+         y: player2.y + player2.height / 2 - 2,
+         width: 15,
+         height: 5,
+         dx: PLAYER_BULLET_SPEED * 1.4,
+         dy: 0,
+         birthTime: now,
+         homing: !!gameState.activePowerUps.homing
+     });
+     player2LastShotTime = now;
+ }
+ 
+ window.addEventListener('keydown', (e) => {
+     // Toggle multiplayer spawn with 'j'
+     if (e.key && e.key.toLowerCase() === 'j') {
+         // only allow when on game screen
+         if (gameState.currentScreen === 'game') togglePlayer2();
+     }
+ 
+     // If player2 exists and game is active, track arrow keys for player2 and handle its shooting key 'ç'
+     if (player2 && gameState.currentScreen === 'game' && !gameState.gameOver && !gameState.levelWon) {
+         // Arrow keys for player2 movement
+         if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)) {
+             player2KeysPressed[e.key] = true;
+         }
+         // 'ç' key (common Portuguese keyboard) may appear as 'ç' or with keyCode 231; handle both
+         if ((e.key && e.key.toLowerCase() === 'ç') || e.keyCode === 231) {
+             e.preventDefault();
+             const now = Date.now();
+             if (now - player2LastShotTime > PLAYER2_SHOOT_COOLDOWN) {
+                 shootPlayer2Bullet(now);
+             }
+         }
+     }
+ 
+     // Allow movement and single-press shooting only for main player during game screen
+     if (gameState.currentScreen === 'game' && !gameState.gameOver && !gameState.levelWon) {
+         // Movement keys still tracked in keysPressed
+         if (e.key !== ' ') {
+             keysPressed[e.key] = true;
+         } else {
+             // Space: handle single-press shooting (ignore repeats)
+             e.preventDefault();
+             if (!e.repeat) {
+                 const now = Date.now();
+                 if (now - gameState.lastShotTime > gameState.shootCooldown) {
+                     shootPlayerBullet(now);
+                     gameState.lastShotTime = now;
+                 }
+             }
+         }
+ 
+         // Power-up pickup / activation keys
+         if (gameState.powerUpsDisabled) {
+             // Inform user via sound that power-ups are disabled in multiplayer
+             try { failSound && failSound.play(); } catch(e) {}
+         } else {
+             if (e.key.toLowerCase() === 'z') {
+                 handlePickupOnZ();
+             } else if (e.key.toLowerCase() === 'x') {
+                 // Use homing power-up manually (X)
+                 if (canUsePowerUp('homing')) activatePowerUp('homing');
+             } else if (e.key.toLowerCase() === 'c') {
+                 // Use shield power-up manually (C)
+                 if (canUsePowerUp('shield')) activatePowerUp('shield');
+             } else if (e.key.toLowerCase() === 'v') {
+                 // also allow V to trigger multishot manually for testing (optional)
+                 if (canUsePowerUp('multishot')) activatePowerUp('multishot');
+             }
+         }
+     } else {
+         // Clear keys if not in game (e.g., navigating menus)
+         keysPressed[e.key] = false;
+     }
+ });
+ 
+ window.addEventListener('keyup', (e) => {
+     // Main player key clear
+     keysPressed[e.key] = false;
+     // Player2 key clear
+     if (player2) player2KeysPressed[e.key] = false;
+ });
+
+window.addEventListener('resize', () => {
+    if (gameState.currentScreen === 'game') {
+        resizeCanvas();
+        // May need to reposition elements based on new canvas size
+        player.y = gameCanvas.height / 2 - player.height / 2; // Re-center player vertically
+    }
+});
+
+backToWorldSelectButton.addEventListener('click', goBackToWorldSelect);
+backToLevelSelectButton.addEventListener('click', goBackToLevelSelect);
+nextWorldButton.addEventListener('click', goToNextWorld);
+worldCompleteBackToWorldsButton.addEventListener('click', goBackToWorldSelect);
+gameOverBackButton.addEventListener('click', goBackToLevelSelect);
+startGameButton.addEventListener('click', () => showScreen('worldSelect'));
+
+// Help / Multiplayer UI handlers
+const helpBtn = document.getElementById('help-multiplayer-button');
+const helpModal = document.getElementById('help-multiplayer-modal');
+const helpClose = document.getElementById('help-multiplayer-close');
+const helpActivate = document.getElementById('help-multiplayer-activate');
+
+if (helpBtn) {
+    helpBtn.addEventListener('click', () => {
+        if (helpModal) helpModal.style.display = 'block';
+    });
+}
+if (helpClose) {
+    helpClose.addEventListener('click', () => {
+        if (helpModal) helpModal.style.display = 'none';
+    });
+}
+if (helpActivate) {
+    helpActivate.addEventListener('click', () => {
+        // Attempt to activate multiplayer (spawn player2)
+        if (gameState.currentScreen === 'game') {
+            togglePlayer2(); // toggle in-match if already on game screen
+        } else {
+            // If not in-game, go to world selection then game (user can start a level and then press 'j' or reopen help)
+            showScreen('worldSelect');
+            // Also provide immediate feedback by spawning player2 preview (will have effect once game starts)
+            try { togglePlayer2(); } catch(e){}
+        }
+        if (helpModal) helpModal.style.display = 'none';
+    });
+}
+
+// --- Initialization ---
+function init() {
+    console.log("Initializing Game...");
+    // Load saved state from localStorage
+    const savedState = localStorage.getItem('aeroAcesSave');
+    if (savedState) {
+        Object.assign(gameState, JSON.parse(savedState) || {});
+    }
+    generateWorldButtons();
+    showScreen('lobby'); // Start at lobby screen
+    window.dispatchEvent(new Event('resize')); // Initial canvas size calculation
+}
+
+ // Start the application (show loading screen for 5s then lobby)
+ function finishInitAfterLoading() {
+     generateWorldButtons();
+     showScreen('lobby'); // show lobby after loading
+     window.dispatchEvent(new Event('resize')); // Initial canvas size calculation
+ }
+
+ function init() {
+     console.log("Initializing Game...");
+     // Load saved state from localStorage
+     const savedState = localStorage.getItem('aeroAcesSave');
+     if (savedState) {
+         Object.assign(gameState, JSON.parse(savedState) || {});
+     }
+
+     // Keep loading screen visible for 5 seconds, then finish initialization
+     showScreen('lobby'); // ensure non-game music state handled while loading-screen is active (we will hide it shortly)
+     // Immediately show the loading-screen element (it's in DOM and default active). After 5s, remove it and reveal lobby.
+     setTimeout(() => {
+         // Hide loading screen element
+         const loadingEl = document.getElementById('loading-screen');
+         if (loadingEl) loadingEl.style.display = 'none';
+         finishInitAfterLoading();
+     }, 5000);
+ }
+
+ init(); // Start the application
+
+ // Minimal visual rendering for power-up pickups and UI updates
+ function drawPowerUpPickups() {
+     // draw small icons on canvas for pickups
+     gameState.powerUpsOnField = gameState.powerUpsOnField.filter(p => {
+         // expire pickups after 12s
+         if (Date.now() - p.spawnTime > 12000) return false;
+         ctx.save();
+         ctx.translate(p.x, p.y);
+         ctx.fillStyle = (p.type === 'multishot') ? '#f39c12' : (p.type === 'homing' ? '#9b59b6' : '#2ecc71');
+         ctx.beginPath();
+         ctx.arc(p.width/2, p.height/2, 10, 0, Math.PI*2);
+         ctx.fill();
+         ctx.fillStyle = '#fff';
+         ctx.font = '10px sans-serif';
+         ctx.fillText(p.type[0].toUpperCase(),  p.width/2 - 4, p.height/2 + 4);
+         ctx.restore();
+         return true;
+     });
+ }
+
+ // Hook into draw loop by wrapping draw; simple override to draw pickups after main draw
+ const _origDraw = draw;
+ draw = function() {
+     _origDraw();
+     drawPowerUpPickups();
+     updatePowerUpUI();
+ };
+
+ // Clickable power-up buttons in the UI: allow direct activation with clicks
+ document.addEventListener('click', (e) => {
+     const btn = e.target.closest('.power-up-slot');
+     if (!btn) return;
+     // If power-ups are disabled due to multiplayer, block activation
+     if (gameState.powerUpsDisabled) {
+         try { failSound && failSound.play(); } catch(e) {}
+         return;
+     }
+     const type = btn.getAttribute('data-type');
+     if (!type) return;
+
+     // Z is special: attempting to pick up nearby pickup first, else try to activate stored uses
+     if (type === 'multishot') {
+         // try pickup first (simulate pressing Z)
+         handlePickupOnZ();
+         // If still can't use, try activate if possible
+         if (canUsePowerUp('multishot') && !gameState.powerUpsOnField.length) {
+             activatePowerUp('multishot');
+         }
+     } else if (type === 'homing') {
+         if (canUsePowerUp('homing')) activatePowerUp('homing'); else try { failSound.play(); } catch(e){}
+     } else if (type === 'shield') {
+         if (canUsePowerUp('shield')) activatePowerUp('shield'); else try { failSound.play(); } catch(e){}
+     }
+ });
+
+ // Load per-world uses state when starting a level
+ const _origStartLevel = startLevel;
+ startLevel = function(world, level, type) {
+     // ensure uses object exists for the world
+     if (!gameState.powerUpUsesThisWorld[world]) {
+         gameState.powerUpUsesThisWorld[world] = { multishot:0, homing:0, shield:0 };
+     }
+     // Reset any player2-disabled flag when a new level starts so 'j' can spawn again
+     gameState.player2Disabled = false;
+
+     // Restore player1 visibility/active status in case they were removed in the previous match
+     player._inMatch = true;
+     // Reset player position to a safe starting point (will be adjusted again in _origStartLevel)
+     player.x = 50;
+     player.y = (gameCanvas.height > 0) ? (gameCanvas.height / 2 - player.height / 2) : player.y;
+     // Restore UI opacity in case it was dimmed on death
+     try {
+         if (playerLivesSpan && playerLivesSpan.parentElement) {
+             playerLivesSpan.parentElement.style.opacity = 1;
+         }
+     } catch (e) { /* ignore */ }
+
+     updatePowerUpUI();
+     _origStartLevel(world, level, type);
+ };
+</script>
+</body>
+</html>
